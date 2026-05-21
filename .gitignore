@@ -11,4 +11,5 @@ old/
 data/blog-views.json
 .DS_Store
 *.md
+!src/content/**/*
 /public/images/original/
