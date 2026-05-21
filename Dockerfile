@@ -29,7 +29,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/dist ./dist
 
-# Счётчики блога: при необходимости монтируйте том на /app/data (см. docker-compose)
+# Счётчики блога: том на /app/data — см. docker-compose.yml в корне репозитория.
 RUN mkdir -p /app/data
 
 EXPOSE 4321
