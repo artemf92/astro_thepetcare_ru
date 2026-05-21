@@ -1,0 +1,27 @@
+---
+import { buildSiteJsonLd } from '../../lib/schema-org';
+import { site } from '../../data/site';
+
+interface Props {
+  /** Как в SEO: путь от корня сайта */
+  canonical?: string;
+  title?:      string;
+}
+
+const { canonical, title } = Astro.props;
+
+const baseUrl = Astro.site ?? new URL(site.url);
+const siteOrigin = baseUrl.origin;
+const pageUrl =
+  canonical !== undefined && canonical !== null && canonical !== ''
+    ? new URL(canonical, baseUrl).href
+    : new URL(Astro.url.pathname, baseUrl).href;
+
+const jsonLd = buildSiteJsonLd({
+  baseUrl:    siteOrigin,
+  pageUrl,
+  pageTitle:  title,
+});
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

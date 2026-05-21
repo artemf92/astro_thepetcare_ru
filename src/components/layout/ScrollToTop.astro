@@ -1,0 +1,125 @@
+---
+// Кнопка «наверх»: показ после прокрутки, плавный скролл с учётом prefers-reduced-motion
+---
+
+<button
+  id="scroll-to-top"
+  class="scroll-to-top"
+  type="button"
+  aria-label="Прокрутить страницу вверх"
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="22"
+    height="22"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="m18 15-6-6-6 6" />
+  </svg>
+</button>
+
+<style>
+  .scroll-to-top {
+    position: fixed;
+    right: max(var(--spacing-24), var(--spacing-32));
+    bottom: max(var(--spacing-24), var(--spacing-96));
+    z-index: 10000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: var(--radius-buttons);
+    background: var(--color-ink);
+    color: var(--color-canvas);
+    box-shadow: var(--shadow-subtle);
+
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(8px);
+    transition:
+      opacity 0.22s ease,
+      visibility 0.22s ease,
+      transform 0.22s ease;
+  }
+
+  .scroll-to-top.is-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .scroll-to-top:hover {
+    opacity: 0.88;
+  }
+
+  .scroll-to-top:focus-visible {
+    outline: 2px solid var(--color-terracotta);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 480px) {
+    .scroll-to-top {
+      right: var(--spacing-16);
+      bottom: max(calc(var(--spacing-24) + 56px), env(safe-area-inset-bottom, 0px));
+    }
+  }
+</style>
+
+<script>
+  const el = document.getElementById('scroll-to-top');
+  if (el instanceof HTMLButtonElement) {
+    const btn = el;
+    const showAfter = 320;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function updateVisibility() {
+      const y = window.scrollY || document.documentElement.scrollTop;
+      const show = y > showAfter;
+      btn.classList.toggle('is-visible', show);
+      btn.setAttribute('aria-hidden', show ? 'false' : 'true');
+      if (show) {
+        btn.removeAttribute('tabindex');
+      } else {
+        btn.setAttribute('tabindex', '-1');
+      }
+    }
+
+    let ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        updateVisibility();
+        ticking = false;
+      });
+    }
+
+    btn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      });
+    });
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    updateVisibility();
+  }
+</script>

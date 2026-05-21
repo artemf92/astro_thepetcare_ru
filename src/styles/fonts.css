@@ -1,0 +1,55 @@
+/* ═══════════════════════════════════════════════════════
+   ШРИФТЫ — локальные WOFF2, без внешних запросов
+   Файлы: public/fonts/sohne-*.woff2, signifier-400.woff2
+   Лицензия: Klim Type Foundry — klim.co.nz
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Sohne (основной UI-шрифт) ───────────────────────── */
+@font-face {
+  font-family: 'Sohne';
+  src: url('/fonts/sohne-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sohne';
+  src: url('/fonts/sohne-430.woff2') format('woff2');
+  font-weight: 430;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sohne';
+  src: url('/fonts/sohne-450.woff2') format('woff2');
+  font-weight: 450;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sohne';
+  src: url('/fonts/sohne-480.woff2') format('woff2');
+  font-weight: 480;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sohne';
+  src: url('/fonts/sohne-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Signifier (только display-заголовки 44px+) ──────── */
+@font-face {
+  font-family: 'Signifier';
+  src: url('/fonts/signifier-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}

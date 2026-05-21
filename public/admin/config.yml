@@ -1,0 +1,116 @@
+backend:
+  name: github
+  repo: thepetcare-ru/ThePetCare.ru   # GitHub: org/repo — заменить если другой адрес
+  branch: main
+
+# Локально: запустите `pnpm dev:cms` (decap-server). На продакшене (Docker/thepetcare.ru)
+# удалите следующую строку или задайте false — иначе админка будет стучаться в localhost вместо GitHub OAuth.
+local_backend: true
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+
+  # ── Страницы ──────────────────────────────────────────
+  - name: "pages"
+    label: "Страницы"
+    folder: "src/content/pages"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "H1",              name: "h1",              widget: "string" }
+      - { label: "Meta Title",      name: "metaTitle",       widget: "string" }
+      - { label: "Meta Description",name: "metaDescription", widget: "text" }
+      - { label: "OG Image",        name: "ogImage",         widget: "image",  required: false }
+      - { label: "Контент",         name: "body",            widget: "markdown" }
+
+  # ── Блог ──────────────────────────────────────────────
+  - name: "blog"
+    label: "Блог"
+    folder: "src/content/blog"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Заголовок",          name: "title",       widget: "string" }
+      - { label: "Краткое описание",   name: "excerpt",     widget: "text" }
+      - { label: "Обложка",            name: "coverImage",  widget: "image" }
+      - { label: "Дата",               name: "date",        widget: "datetime", format: "YYYY-MM-DD" }
+      - { label: "Теги",               name: "tags",        widget: "list",    required: false }
+      - { label: "Автор",              name: "author",      widget: "string",  required: false, default: "Редакция The Pet Care" }
+      - { label: "Контент",            name: "body",        widget: "markdown" }
+
+  # ── Услуги ────────────────────────────────────────────
+  - name: "services"
+    label: "Услуги"
+    folder: "src/content/services"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "H1 / Название",   name: "h1",              widget: "string" }
+      - { label: "Meta Title",      name: "metaTitle",       widget: "string" }
+      - { label: "Meta Description",name: "metaDescription", widget: "text" }
+      - { label: "Краткое описание",name: "excerpt",         widget: "text",   required: false }
+      - { label: "Изображение",     name: "image",           widget: "image",  required: false }
+      - label: "Примеры работ"
+        name: "portfolioImages"
+        widget: "list"
+        required: false
+        summary: "{{fields.image}}"
+        fields:
+          - { label: "Фото", name: "image", widget: "image" }
+      - label: "Блок «Запись» внизу страницы"
+        name: "bottomCtaTitle"
+        widget: "string"
+        required: false
+        hint: "Заголовок призыва к записи (если пусто — подставится текст по умолчанию)"
+      - label: "Подзаголовок блока записи"
+        name: "bottomCtaSub"
+        widget: "text"
+        required: false
+        hint: "Строка под заголовком (если пусто — текст по умолчанию)"
+      - { label: "Порядок",         name: "order",           widget: "number", required: false, default: 0 }
+      - { label: "Контент",         name: "body",            widget: "markdown" }
+
+  # ── Настройки сайта ───────────────────────────────────
+  - name: "settings"
+    label: "Настройки сайта"
+    files:
+      - name: "site"
+        label: "Контакты и лого"
+        file: "src/data/site.json"
+        fields:
+          - { label: "Название сайта",  name: "name",        widget: "string" }
+          - { label: "Описание",        name: "description", widget: "string" }
+          - label: "Контакты"
+            name: contacts
+            widget: object
+            fields:
+              - { label: "Телефон (отображение)", name: "phone",    widget: "string" }
+              - { label: "Телефон (для tel:)",     name: "phoneRaw", widget: "string" }
+              - { label: "Email",                   name: "email",    widget: "string" }
+              - { label: "Адрес",                   name: "address",  widget: "string", required: false }
+          - label: "Соцсети"
+            name: social
+            widget: object
+            fields:
+              - { label: "ВКонтакте", name: "vk",        widget: "string", required: false }
+              - { label: "Telegram",  name: "telegram",   widget: "string", required: false }
+              - { label: "Instagram", name: "instagram",  widget: "string", required: false }
+
+      - name: "navigation"
+        label: "Навигация"
+        file: "src/data/navigation.json"
+        fields:
+          - label: "Главное меню"
+            name: mainNav
+            widget: list
+            fields:
+              - { label: "Название", name: "title", widget: "string" }
+              - { label: "URL",      name: "url",   widget: "string" }
+          - label: "Меню подвала"
+            name: footerNav
+            widget: list
+            fields:
+              - { label: "Название", name: "title", widget: "string" }
+              - { label: "URL",      name: "url",   widget: "string" }

@@ -1,0 +1,36 @@
+---
+type AOSAnimation =
+  | 'fade-up' | 'fade-down' | 'fade-right' | 'fade-left'
+  | 'fade-up-right' | 'fade-up-left'
+  | 'zoom-in' | 'zoom-out'
+  | 'flip-left' | 'flip-right' | 'flip-up'
+  | 'slide-up' | 'slide-right' | 'slide-left';
+
+interface Props {
+  animation?: AOSAnimation;
+  delay?:     number;   // мс
+  duration?:  number;   // мс
+  once?:      boolean;
+  class?:     string;
+  tag?:       'div' | 'section' | 'article' | 'li';
+}
+
+const {
+  animation = 'fade-up',
+  delay      = 0,
+  duration   = 700,
+  once       = true,
+  class: className,
+  tag: Tag   = 'div',
+} = Astro.props;
+---
+
+<Tag
+  data-aos={animation}
+  data-aos-delay={String(delay)}
+  data-aos-duration={String(duration)}
+  data-aos-once={String(once)}
+  class={className}
+>
+  <slot />
+</Tag>

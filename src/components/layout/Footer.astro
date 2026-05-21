@@ -1,0 +1,277 @@
+---
+import { site } from '../../data/site';
+import { footerServicesNav, footerAboutNav } from '../../data/navigation';
+import { Image } from 'astro:assets';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="footer-inner container">
+
+    <!-- Колонка: бренд -->
+    <div class="footer-brand">
+      <a href="/" class="footer-logo" aria-label={site.logo.alt}>
+        <Image
+          src={site.logo.src}
+          alt={site.logo.alt}
+          width={250}
+          height={94}
+          loading="lazy"
+        />
+      </a>
+      {site.description && (
+        <p class="footer-desc">{site.description}</p>
+      )}
+      <br>
+      <iframe src="https://yandex.ru/sprav/widget/rating-badge/147452550064?type=rating&amp;theme=dark" width="150" height="50"></iframe>
+    </div>
+
+    <!-- Колонка: услуги -->
+    <nav class="footer-nav" aria-label="Услуги">
+      <p class="footer-nav-heading">Услуги</p>
+      <ul>
+        {footerServicesNav.map(item => (
+          <li><a href={item.url}>{item.title}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <!-- Колонка: студия -->
+    <nav class="footer-nav" aria-label="О студии">
+      <p class="footer-nav-heading">О нас</p>
+      <ul>
+        {footerAboutNav.map(item => (
+          <li><a href={item.url}>{item.title}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <!-- Контакты -->
+    <div class="footer-contacts">
+      <p class="footer-nav-heading">Контакты</p>
+      <p>{site.contacts.address}</p>
+      <br>
+      <p>Пн-вс 10:00 - 19:00 <br> по предварительной записи</p>
+      <br>
+      {site.contacts.phoneRaw && (
+      <p><a href={`tel:${site.contacts.phoneRaw}`}>{site.contacts.phone}</a></p>
+      )}
+      {site.contacts.email && (
+      <p><a href={`mailto:${site.contacts.email}`}>{site.contacts.email}</a></p>
+      )}
+      {(site.social.telegram || site.social.instagram || site.social.vk) && (
+        <div class="footer-social">
+          {site.social.telegram && (
+            <a
+              class="footer-social-link"
+              href={site.social.telegram}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Telegram"
+            >
+              <svg class="footer-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                <path fill="currentColor" d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.061 3.345-.479.329-.913.489-1.302.481-.428-.008-1.252-.241-1.865-.442-.752-.245-1.349-.374-1.297-.789.027-.216.324-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.477-1.635z"/>
+              </svg>
+            </a>
+          )}
+          {site.social.instagram && (
+            <a
+              class="footer-social-link"
+              href={site.social.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
+              <svg class="footer-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                <path fill="currentColor" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+              </svg>
+            </a>
+          )}
+          {site.social.vk && (
+            <a
+              class="footer-social-link"
+              href={site.social.vk}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="ВКонтакте"
+            >
+              <svg class="footer-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                <path fill="currentColor" d="M15.684 0H8.316C1.754 0 0 1.754 0 8.316v7.368C0 22.246 1.754 24 8.316 24h7.368C22.246 24 24 22.246 24 15.684V8.316C24 1.754 22.246 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.525-2.05-1.727-1.033-1-1.49-1.135-1.744-1.135-.356 0-.458.102-.458.593v1.575c0 .424-.135.678-1.253.678-1.846 0-3.896-1.118-5.335-3.202C4.624 11.057 4.03 8.583 4.03 8.195c0-.254.102-.491.593-.491h1.744c.44 0 .61.203.78.677.847 2.49 2.269 4.675 2.846 4.675.22 0 .322-.102.322-.66V10.74c-.068-1.186-.695-1.287-.695-1.71 0-.204.17-.407.44-.407h2.744c.373 0 .508.203.508.643v3.473c0 .373.17.508.271.508.22 0 .407-.136.813-.542 1.254-1.405 2.156-3.574 2.156-3.574.119-.254.322-.491.763-.491h1.744c.525 0 .644.271.525.643-.203.847-2.354 4.084-2.354 4.084-.186.339-.254.491 0 .847.186.271.797.83 1.202 1.338.763.896 1.353 1.845 1.353 2.744 0 .254-.136.593-.763.593z"/>
+              </svg>
+            </a>
+          )}
+        </div>
+      )}
+    </div>
+
+  </div>
+
+  <div class="footer-bottom container">
+    <p>© {year} {site.name}. Все права защищены.</p>
+    <p class="footer-dev">
+      <a href="https://codetop.ru/" rel="nofollow" target="_blank" class="text-center" style="display: flex;margin-top: 1rem;gap: 5px;align-items: center;text-decoration: none;">
+	      Поддержка сайта - 
+	      <span class="icon" style="vertical-align: -webkit-baseline-middle;">
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 200" width="24" height="24"><rect width="200" height="200" fill="#fff"></rect><defs><linearGradient id="gradient" gradientTransform="rotate(133 0.5 0.5)"><stop offset="0%" stop-color="#ff6b50"></stop><stop offset="100%" stop-color="#ec3b1b"></stop></linearGradient></defs><g><g fill="#151515" transform="matrix(9.287981859410431,0,0,9.287981859410431,13.758980819022028,166.0418059874554)" stroke="#ffffff" stroke-width="0"><path d="M9.17-4.81L12.58-4.81Q12.51-3.33 11.78-2.19Q11.04-1.05 9.72-0.43Q8.40 0.20 6.70 0.20L6.70 0.20Q3.90 0.20 2.29-1.63Q0.67-3.46 0.67-6.79L0.67-6.79L0.67-7.49Q0.67-9.58 1.40-11.15Q2.13-12.71 3.50-13.57Q4.86-14.42 6.66-14.42L6.66-14.42Q9.25-14.42 10.82-13.06Q12.39-11.70 12.61-9.31L12.61-9.31L9.19-9.31Q9.15-10.61 8.54-11.17Q7.92-11.74 6.66-11.74L6.66-11.74Q5.38-11.74 4.79-10.78Q4.19-9.82 4.16-7.72L4.16-7.72L4.16-6.72Q4.16-4.44 4.73-3.47Q5.30-2.49 6.70-2.49L6.70-2.49Q7.88-2.49 8.51-3.05Q9.13-3.60 9.17-4.81L9.17-4.81ZM16.08-3.19L16.08-3.19Q16.87-3.19 17.38-2.73Q17.90-2.27 17.90-1.54Q17.90-0.82 17.38-0.36Q16.87 0.11 16.08 0.11L16.08 0.11Q15.29 0.11 14.78-0.36Q14.27-0.83 14.27-1.54Q14.27-2.26 14.78-2.72Q15.29-3.19 16.08-3.19Z"></path></g></g></svg>
+	      </span>
+	      Codetop.ru
+	    </a>
+    </p>
+  </div>
+</footer>
+
+<script is:inline>
+  (function () {
+    function injectJivoDelayed() {
+      window.setTimeout(function () {
+        const script = document.createElement('script');
+        script.src = '//code.jivo.ru/widget/j2V0tblbPu';
+        document.body.appendChild(script);
+      }, 3500);
+    }
+
+    if (document.readyState === 'complete') {
+      injectJivoDelayed();
+    } else {
+      window.addEventListener('load', injectJivoDelayed);
+    }
+  })();
+</script>
+
+<style>
+  .site-footer {
+    background:  var(--color-fog);
+  }
+
+  .footer-inner {
+    display:               grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap:                   var(--spacing-40);
+    padding-top:           var(--spacing-64);
+    padding-bottom:        var(--spacing-40);
+  }
+
+  .footer-nav-heading {
+    font-size:      13px;
+    font-weight:    500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color:          var(--color-ink);
+    margin-bottom:  var(--spacing-16);
+  }
+
+  /* Бренд */
+  /* .footer-logo img { height: 28px; width: auto; } */
+
+  .footer-desc {
+    margin-top:  var(--spacing-16);
+    font-size:   14px;
+    line-height: 1.6;
+    color:       var(--color-muted-stone);
+    max-width:   280px;
+  }
+
+  .footer-contact {
+    display:     block;
+    margin-top:  var(--spacing-8);
+    font-size:   15px;
+    font-weight: 500;
+    color:       var(--color-ink);
+  }
+  .footer-contact:hover { opacity: 0.7; }
+
+  .footer-address {
+    margin-top:  var(--spacing-8);
+    font-size:   13px;
+    color:       var(--color-light-steel);
+    line-height: 1.5;
+  }
+
+  /* Навигация */
+  .footer-nav ul {
+    list-style: none;
+    display:    flex;
+    flex-direction: column;
+    gap:        var(--spacing-12);
+  }
+
+  .footer-nav a {
+    font-size:   14px;
+    color:       var(--color-muted-stone);
+    transition:  color 0.15s ease;
+  }
+  .footer-nav a:hover { color: var(--color-ink); }
+
+  /* Соцсети */
+  .footer-social {
+    display:        flex;
+    flex-direction: row;
+    flex-wrap:      wrap;
+    gap:            var(--spacing-12);
+    margin-top:     var(--spacing-20);
+    padding-top:    var(--spacing-20);
+    border-top:     1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .footer-social-link {
+    display:         inline-flex;
+    align-items:     center;
+    justify-content: center;
+    width:           40px;
+    height:          40px;
+    color:           var(--color-ink);
+    border-radius:   10px;
+    transition:      opacity 0.15s ease, background-color 0.15s ease;
+  }
+  .footer-social-link:hover {
+    opacity: 0.85;
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  .footer-social-link:focus-visible {
+    outline:        2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  .footer-social-icon {
+    display: block;
+    width:   22px;
+    height:  22px;
+  }
+
+  /* Нижняя строка */
+  .footer-bottom {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     center;
+    padding-top:     var(--spacing-20);
+    padding-bottom:  var(--spacing-20);
+    border-top:      1px solid rgba(0, 0, 0, 0.06);
+    font-size:       13px;
+    color:           var(--color-light-steel);
+  }
+
+  .footer-dev {
+    font-size: 13px;
+    color:     var(--color-light-steel);
+  }
+  .footer-dev a {
+    color:           var(--color-light-steel);
+    text-decoration: underline;
+    text-decoration-color: rgba(0,0,0,0.2);
+    text-underline-offset: 2px;
+    transition: color 0.15s ease;
+  }
+  .footer-dev a:hover { color: var(--color-ink); }
+
+  @media (max-width: 768px) {
+    .footer-inner {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-32);
+    }
+    .footer-bottom {
+      flex-direction: column;
+      align-items:    flex-start;
+      gap:            var(--spacing-8);
+    }
+  }
+</style>

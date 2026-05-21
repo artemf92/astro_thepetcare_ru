@@ -1,0 +1,267 @@
+{
+    "site_name": "ThePetCare.ru",
+    "site_desc": "Профессиональная стрижка собак и кошек в Калининграде",
+    "site_url": "http://localhost",
+    "logo": {
+        "id": 0,
+        "url": null,
+        "width": null,
+        "height": null
+    },
+    "favicon_url": "http://localhost/wp-content/uploads/2024/09/cropped-favicon.png",
+    "theme_mods": {
+        "0": false,
+        "nav_menu_locations": {
+            "top_nav": 82,
+            "off_canvas_nav": 86
+        },
+        "custom_css_post_id": 11065
+    },
+    "acf_options": null,
+    "menus": {
+        "corporate-3": {
+            "id": 82,
+            "name": "Corporate 3",
+            "slug": "corporate-3",
+            "items": [
+                {
+                    "id": 11036,
+                    "title": "Главная",
+                    "url": "http://localhost/",
+                    "parent": 0,
+                    "order": 1,
+                    "target": ""
+                },
+                {
+                    "id": 11602,
+                    "title": "Услуги",
+                    "url": "http://localhost/services/",
+                    "parent": 0,
+                    "order": 2,
+                    "target": ""
+                },
+                {
+                    "id": 11209,
+                    "title": "Цены",
+                    "url": "http://localhost/prices/",
+                    "parent": 0,
+                    "order": 3,
+                    "target": ""
+                },
+                {
+                    "id": 11051,
+                    "title": "О нас",
+                    "url": "http://localhost/about/",
+                    "parent": 0,
+                    "order": 4,
+                    "target": ""
+                },
+                {
+                    "id": 11050,
+                    "title": "Контакты",
+                    "url": "http://localhost/contact/",
+                    "parent": 0,
+                    "order": 5,
+                    "target": ""
+                },
+                {
+                    "id": 11052,
+                    "title": "Записаться",
+                    "url": "https://dikidi.ru/#widget=187143",
+                    "parent": 0,
+                    "order": 6,
+                    "target": ""
+                }
+            ]
+        },
+        "footer-menu-1": {
+            "id": 86,
+            "name": "Footer menu #1",
+            "slug": "footer-menu-1",
+            "items": [
+                {
+                    "id": 11584,
+                    "title": "Стрижка собак",
+                    "url": "http://localhost/services/strizhka-sobak/",
+                    "parent": 0,
+                    "order": 1,
+                    "target": ""
+                },
+                {
+                    "id": 11585,
+                    "title": "Полный комплекс для собак",
+                    "url": "http://localhost/services/polnyy-kompleks-dlya-sobak/",
+                    "parent": 0,
+                    "order": 2,
+                    "target": ""
+                },
+                {
+                    "id": 11586,
+                    "title": "Чистка зубов собакам",
+                    "url": "http://localhost/services/chistka-zubov-sobakam/",
+                    "parent": 0,
+                    "order": 3,
+                    "target": ""
+                },
+                {
+                    "id": 11587,
+                    "title": "SPA-процедуры для собак",
+                    "url": "http://localhost/services/spa-procedury-dlya-sobak/",
+                    "parent": 0,
+                    "order": 4,
+                    "target": ""
+                },
+                {
+                    "id": 11588,
+                    "title": "Мытье и сушка собак",
+                    "url": "http://localhost/services/myte-i-sushka-sobak/",
+                    "parent": 0,
+                    "order": 5,
+                    "target": ""
+                },
+                {
+                    "id": 11589,
+                    "title": "Гигиена для собак",
+                    "url": "http://localhost/services/gigiena-dlya-sobak/",
+                    "parent": 0,
+                    "order": 6,
+                    "target": ""
+                },
+                {
+                    "id": 11590,
+                    "title": "Груминг для щенков",
+                    "url": "http://localhost/services/gruming-dlya-shhenkov/",
+                    "parent": 0,
+                    "order": 7,
+                    "target": ""
+                },
+                {
+                    "id": 11591,
+                    "title": "Мытье и сушка кошек",
+                    "url": "http://localhost/services/myte-i-sushka-koshek/",
+                    "parent": 0,
+                    "order": 8,
+                    "target": ""
+                },
+                {
+                    "id": 11592,
+                    "title": "SPA-процедуры для кошек",
+                    "url": "http://localhost/services/spa-procedury-dlya-koshek/",
+                    "parent": 0,
+                    "order": 9,
+                    "target": ""
+                },
+                {
+                    "id": 11593,
+                    "title": "Полный комплекс для кошек",
+                    "url": "http://localhost/services/polnyy-kompleks-dlya-koshek/",
+                    "parent": 0,
+                    "order": 10,
+                    "target": ""
+                },
+                {
+                    "id": 11594,
+                    "title": "Экспресс-линька для кошек",
+                    "url": "http://localhost/services/ekspress-linka-dlya-koshek/",
+                    "parent": 0,
+                    "order": 11,
+                    "target": ""
+                }
+            ]
+        },
+        "footer-menu-2": {
+            "id": 87,
+            "name": "Footer menu #2",
+            "slug": "footer-menu-2",
+            "items": [
+                {
+                    "id": 11113,
+                    "title": "Студия",
+                    "url": "http://localhost/about/",
+                    "parent": 0,
+                    "order": 1,
+                    "target": ""
+                },
+                {
+                    "id": 11111,
+                    "title": "Наши мастера",
+                    "url": "http://localhost/masters/",
+                    "parent": 0,
+                    "order": 2,
+                    "target": ""
+                },
+                {
+                    "id": 11110,
+                    "title": "Подарочный сертификат",
+                    "url": "http://localhost/podarochnye-sertifikaty/",
+                    "parent": 0,
+                    "order": 3,
+                    "target": ""
+                },
+                {
+                    "id": 11112,
+                    "title": "Контакты",
+                    "url": "http://localhost/contact/",
+                    "parent": 0,
+                    "order": 4,
+                    "target": ""
+                },
+                {
+                    "id": 11109,
+                    "title": "Реквизиты",
+                    "url": "http://localhost/requisites/",
+                    "parent": 0,
+                    "order": 5,
+                    "target": ""
+                },
+                {
+                    "id": 11108,
+                    "title": "Договор публичной оферты",
+                    "url": "http://localhost/public-oferta/",
+                    "parent": 0,
+                    "order": 6,
+                    "target": ""
+                },
+                {
+                    "id": 11241,
+                    "title": "Правила посещения студии",
+                    "url": "http://localhost/rools/",
+                    "parent": 0,
+                    "order": 7,
+                    "target": ""
+                }
+            ]
+        },
+        "primary-menu": {
+            "id": 50,
+            "name": "Primary Menu",
+            "slug": "primary-menu",
+            "items": [
+                {
+                    "id": 9350,
+                    "title": "Обо мне",
+                    "url": "http://localhost/about/",
+                    "parent": 0,
+                    "order": 1,
+                    "target": ""
+                },
+                {
+                    "id": 3952,
+                    "title": "Контакты",
+                    "url": "http://localhost/contact/",
+                    "parent": 0,
+                    "order": 2,
+                    "target": ""
+                },
+                {
+                    "id": 10871,
+                    "title": "Запись",
+                    "url": "#order-btn",
+                    "parent": 0,
+                    "order": 3,
+                    "target": ""
+                }
+            ]
+        }
+    }
+}

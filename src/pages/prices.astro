@@ -1,0 +1,529 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AnimatedBlock from '../components/ui/AnimatedBlock.astro';
+import Breadcrumb from '../components/ui/Breadcrumb.astro';
+import { site } from '../data/site';
+
+// ── Данные: услуги для собак ───────────────────────────────────
+const dogsMain = [
+  { service: 'Комплексный уход с вычесом',    price: 'от 1 600 ₽*', slug: 'polnyy-kompleks-dlya-sobak' },
+  { service: 'Гигиенический груминг',          price: 'от 1 400 ₽*', slug: 'gigiena-dlya-sobak' },
+  { service: 'Мытьё собак',                    price: 'от 1 400 ₽*', slug: 'myte-i-sushka-koshek' },
+  { service: 'Приучение щенка к грумингу',     price: '−15% от стоимости гигиены или полного комплекса' },
+  { service: 'Экспресс-линька',                slug: 'ekspress-linka-dlya-sobak' },
+  { service: 'Колтуны',                        price: 'от 100 ₽' },
+];
+
+const dogsExtra = [
+  { service: 'Озоновая ванна с гидромассажем', price: '700 ₽',                slug: 'spa-procedury-dlya-sobak' },
+  { service: 'Маска по типу шерсти',           price: '400 ₽ для мелких пород, 600 ₽ для средних' },
+  { service: 'Гигиена желез',                  price: '200 ₽' },
+  { service: 'Чистка зубов пастой',            price: '300 ₽',                slug: 'chistka-zubov-sobakam' },
+  { service: 'Стразы на ушки',                 price: '200 ₽ за пару' },
+  { service: 'Только стрижка когтей с подпиливанием', price: '300 ₽ — мелкие породы, 400 ₽ — средние, 500 ₽ — крупные', slug: 'strizhka-kogtey-sobakam' },
+  { service: 'Обработка подушечек лап воском', price: '150 ₽' },
+  { service: 'Мытьё шампунем от блох',         price: '200 ₽' },
+];
+
+// ── Комбо-пакеты ───────────────────────────────────────────────
+const combo = [
+  {
+    name:  'Comfort',
+    items: ['Чистка зубов пастой', 'чистка параанальной железы', 'маска для шерсти'],
+    price: '650 ₽ / 850 ₽',
+    note:  'мелкие / средние породы',
+  },
+  {
+    name:  'All Inclusive',
+    items: ['Чистка зубов пастой', 'чистка параанальной железы', 'маска для шерсти', 'озоновая ванна с гидромассажем'],
+    price: '1 000 ₽',
+    note:  'только мелкие породы',
+  },
+];
+
+// ── Данные: услуги для кошек ───────────────────────────────────
+const catsMain = [
+  { service: 'Стрижка под машинку',              price: 'от 1 800 ₽*', slug: 'polnyy-kompleks-dlya-koshek' },
+  { service: 'Стрижка под машинку с мытьём',     price: 'от 2 400 ₽*', slug: 'polnyy-kompleks-dlya-koshek' },
+  { service: 'Стрижка под машинку агрессора',    price: '2 500 ₽' },
+  { service: 'Экспресс-линька с мытьём',         price: 'от 2 400 ₽*', slug: 'ekspress-linka-dlya-koshek' },
+  { service: 'Экспресс-линька без мытья',        price: 'от 1 700 ₽',  slug: 'ekspress-linka-dlya-koshek' },
+  { service: 'Комплексный уход для лысых пород', price: 'от 1 200 ₽*', slug: 'spa-procedury-dlya-koshek' },
+];
+
+const catsExtra = [
+  { service: 'Стрижка когтей', price: '200 ₽', slug: 'strizhka-kogtey-koshkam' },
+];
+---
+
+<BaseLayout
+  title="Цены на услуги груминга в Калининграде | Груминг-студия The Pet Care"
+  description="Актуальные цены на услуги груминга в Калининграде от салона The Pet Care. Стоимость услуг груминга собак и кошек! Обращайтесь ☎ +7 (902) 416-99-59."
+>
+
+  <Breadcrumb items={[{ label: 'Цены' }]} />
+
+  <!-- ── Hero ──────────────────────────────────────────────── -->
+  <section class="prices-hero section">
+    <div class="container">
+      <AnimatedBlock>
+        <h1 class="display">Цены на услуги груминга</h1>
+      </AnimatedBlock>
+    </div>
+  </section>
+
+  <!-- ── Карточки цен ───────────────────────────────────────── -->
+  <section class="prices-cards section">
+    <div class="container">
+
+      <!-- Собаки: большая карточка с фото -->
+      <AnimatedBlock animation="fade-up">
+        <div class="pc-dogs">
+
+          <div class="pc-dogs-content">
+            <div class="pc-card-header">
+              <h2 class="pc-card-title">Услуги для собак</h2>
+              <span class="pc-paw" aria-hidden="true">🐾</span>
+            </div>
+
+            <!-- Основные услуги -->
+            <ul class="price-list">
+              {dogsMain.map(row => (
+                <li class="pi">
+                  <span class="pi-dash">—</span>
+                  <span class="pi-body">
+                    {row.slug
+                      ? <a href={`/services/${row.slug}/`} class="pi-link">{row.service}</a>
+                      : <span>{row.service}</span>
+                    }
+                    {row.price && <span class="pi-price">({row.price})</span>}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <!-- Дополнительные услуги -->
+            <p class="pc-sub-heading">Дополнительные услуги:</p>
+            <ul class="price-list">
+              {dogsExtra.map(row => (
+                <li class="pi">
+                  <span class="pi-dash">—</span>
+                  <span class="pi-body">
+                    {row.slug
+                      ? <a href={`/services/${row.slug}/`} class="pi-link">{row.service}</a>
+                      : <span>{row.service}</span>
+                    }
+                    {row.price && <span class="pi-price">({row.price})</span>}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <p class="pc-disclaimer">* — стоимость зависит от породы питомца и уровня грумера</p>
+          </div>
+
+          <div class="pc-dogs-photo">
+            <img
+              src="/images/uploads/11298.webp"
+              alt="Груминг-студия The Pet Care — профессиональный уход за собаками"
+              class="pc-photo-img"
+              width="560"
+              height="480"
+              loading="lazy"
+            />
+          </div>
+
+        </div>
+      </AnimatedBlock>
+
+      <!-- Нижняя строка: Комбо + Кошки -->
+      <div class="pc-bottom-row">
+
+        <!-- Комбо -->
+        <AnimatedBlock animation="fade-up" delay={60} class="pc-combo-wrap">
+          <div class="pc-combo">
+            <div class="pc-card-header">
+              <h2 class="pc-card-title">Комбо доп. услуг</h2>
+              <span class="pc-paw" aria-hidden="true">🐾</span>
+            </div>
+
+            {combo.map((pkg, i) => (
+              <>
+                {i > 0 && <hr class="pc-combo-divider" />}
+                <div class="pc-pkg">
+                  <p class="pc-pkg-name">{pkg.name}</p>
+                  <ul class="pc-pkg-items">
+                    {pkg.items.map((item, j) => (
+                      <li>{item}{j < pkg.items.length - 1 ? ' +' : ''}</li>
+                    ))}
+                  </ul>
+                  <p class="pc-pkg-price">
+                    {pkg.price}
+                    {pkg.note && <span class="pc-pkg-note">({pkg.note})</span>}
+                  </p>
+                </div>
+              </>
+            ))}
+          </div>
+        </AnimatedBlock>
+
+        <!-- Кошки -->
+        <AnimatedBlock animation="fade-up" delay={120} class="pc-cats-wrap">
+          <div class="pc-cats">
+            <div class="pc-card-header">
+              <h2 class="pc-card-title">Услуги для кошек</h2>
+              <span class="pc-paw" aria-hidden="true">🐾</span>
+            </div>
+
+            <ul class="price-list">
+              {catsMain.map(row => (
+                <li class="pi">
+                  <span class="pi-dash">—</span>
+                  <span class="pi-body">
+                    {row.slug
+                      ? <a href={`/services/${row.slug}/`} class="pi-link">{row.service}</a>
+                      : <span>{row.service}</span>
+                    }
+                    {row.price && <span class="pi-price">({row.price})</span>}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <p class="pc-sub-heading">Дополнительные услуги:</p>
+            <ul class="price-list">
+              {catsExtra.map(row => (
+                <li class="pi">
+                  <span class="pi-dash">—</span>
+                  <span class="pi-body">
+                    {row.slug
+                      ? <a href={`/services/${row.slug}/`} class="pi-link">{row.service}</a>
+                      : <span>{row.service}</span>
+                    }
+                    {row.price && <span class="pi-price">({row.price})</span>}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <p class="pc-disclaimer">* — стоимость зависит от породы питомца и уровня грумера</p>
+          </div>
+        </AnimatedBlock>
+
+      </div><!-- /pc-bottom-row -->
+
+    </div>
+  </section>
+
+  <!-- ── CTA ──────────────────────────────────────────────── -->
+  <section class="prices-cta section">
+    <div class="container">
+      <AnimatedBlock animation="fade-up">
+        <div class="prices-cta-inner card">
+          <div class="cta-text">
+            <h2>Не нашли свою услугу?</h2>
+            <p>Позвоните нам — ответим на все вопросы и рассчитаем стоимость для вашего питомца.</p>
+          </div>
+          <div class="cta-actions">
+            <button class="btn btn-primary" data-open-callback>Заказать звонок</button>
+            <a href={`tel:${site.contacts.phoneRaw}`} class="btn btn-ghost">{site.contacts.phone}</a>
+          </div>
+        </div>
+      </AnimatedBlock>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  /* ── Hero ─────────────────────────────────────────────────── */
+  .prices-hero { background: var(--color-fog); }
+  .display { margin-bottom: 0; }
+
+  /* ── Cards section ────────────────────────────────────────── */
+  .prices-cards { background: var(--color-canvas); }
+
+  /* ── Dogs card (большая, с фото) ─────────────────────────── */
+  .pc-dogs {
+    display:       grid;
+    grid-template-columns: 1fr 420px;
+    gap:           0;
+    background:    #f5f0e6;
+    border-radius: var(--radius-cards);
+    overflow:      hidden;
+    margin-bottom: var(--spacing-24);
+  }
+
+  .pc-dogs-content {
+    padding: var(--spacing-40);
+  }
+
+  .pc-dogs-photo {
+    position: relative;
+    overflow: hidden;
+    min-height: 340px;
+  }
+
+  .pc-photo-img {
+    position:   absolute;
+    inset:      0;
+    width:      100%;
+    height:     100%;
+    object-fit: cover;
+    display:    block;
+  }
+
+  /* ── Bottom row: Combo + Cats ─────────────────────────────── */
+  .pc-bottom-row {
+    display:               grid;
+    grid-template-columns: 1fr 1fr;
+    gap:                   var(--spacing-24);
+    align-items:           start;
+  }
+
+  .pc-combo-wrap,
+  .pc-cats-wrap { display: contents; }
+
+  .pc-combo {
+    background:    #e2ede2;
+    border-radius: var(--radius-cards);
+    padding:       var(--spacing-32) var(--spacing-32);
+    height:        100%;
+  }
+
+  .pc-cats {
+    background:    #e3ecf2;
+    border-radius: var(--radius-cards);
+    padding:       var(--spacing-32) var(--spacing-32);
+    height:        100%;
+  }
+
+  /* ── Card header ──────────────────────────────────────────── */
+  .pc-card-header {
+    display:         flex;
+    align-items:     flex-start;
+    justify-content: space-between;
+    gap:             var(--spacing-12);
+    margin-bottom:   var(--spacing-24);
+  }
+
+  .pc-card-title {
+    font-family:   var(--font-signifier);
+    font-size:     clamp(20px, 3vw, 26px);
+    font-weight:   400;
+    color:         var(--color-ink);
+    line-height:   1.25;
+    margin:        0;
+  }
+
+  .pc-paw {
+    font-size:   26px;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top:  2px;
+  }
+
+  /* ── Price list ───────────────────────────────────────────── */
+  .price-list {
+    list-style:    none;
+    margin:        0 0 var(--spacing-16);
+    padding:       0;
+    display:       flex;
+    flex-direction: column;
+    gap:           var(--spacing-8);
+  }
+
+  .pi {
+    display:     flex;
+    align-items: baseline;
+    gap:         var(--spacing-8);
+    font-family: var(--font-sohne);
+    font-size:   15px;
+    line-height: 1.5;
+    color:       var(--color-ink);
+  }
+
+  .pi-dash {
+    flex-shrink: 0;
+    color:       var(--color-muted-stone);
+    width:       14px;
+    text-align:  center;
+    font-size:   13px;
+  }
+
+  .pi-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .pi-link {
+    color:                var(--color-ink);
+    text-decoration:      underline;
+    text-decoration-color: rgba(0, 0, 0, .25);
+    text-underline-offset: 2px;
+    transition:           text-decoration-color 0.15s;
+  }
+  .pi-link:hover { text-decoration-color: var(--color-ink); }
+
+  .pi-price {
+    color:      var(--color-muted-stone);
+    font-size:  14px;
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* ── Sub-heading ("Дополнительные услуги:") ──────────────── */
+  .pc-sub-heading {
+    font-family:   var(--font-sohne);
+    font-size:     14px;
+    font-weight:   400;
+    color:         var(--color-ink);
+    margin:        var(--spacing-20) 0 var(--spacing-12);
+  }
+
+  /* ── Disclaimer ───────────────────────────────────────────── */
+  .pc-disclaimer {
+    font-family:   var(--font-sohne);
+    font-size:     13px;
+    color:         var(--color-muted-stone);
+    margin-top:    var(--spacing-20);
+    line-height:   1.5;
+  }
+
+  /* ── Combo packages ───────────────────────────────────────── */
+  .pc-combo-divider {
+    border:       none;
+    border-top:   1px solid rgba(0, 0, 0, .12);
+    margin:       var(--spacing-24) 0;
+  }
+
+  .pc-pkg-name {
+    font-family:   var(--font-sohne);
+    font-size:     15px;
+    font-weight:   500;
+    color:         var(--color-ink);
+    margin:        0 0 var(--spacing-8);
+  }
+
+  .pc-pkg-items {
+    list-style:  none;
+    margin:      0 0 var(--spacing-12);
+    padding:     0;
+    display:     flex;
+    flex-direction: column;
+    gap:         var(--spacing-4);
+  }
+
+  .pc-pkg-items li {
+    font-family: var(--font-sohne);
+    font-size:   14px;
+    color:       var(--color-muted-stone);
+    line-height: 1.5;
+  }
+
+  .pc-pkg-price {
+    font-family:   var(--font-sohne);
+    font-size:     18px;
+    font-weight:   600;
+    color:         var(--color-ink);
+    margin:        0;
+  }
+
+  .pc-pkg-note {
+    font-size:   13px;
+    font-weight: 400;
+    color:       var(--color-muted-stone);
+    margin-left: 6px;
+  }
+
+  /* ── CTA ──────────────────────────────────────────────────── */
+  .prices-cta { background: var(--color-fog); }
+
+  .prices-cta-inner {
+    display:         flex;
+    align-items:     center;
+    justify-content: space-between;
+    gap:             var(--spacing-24);
+    padding:         var(--spacing-32) var(--spacing-40);
+  }
+
+  .cta-text h2 {
+    font-size:     22px;
+    font-weight:   500;
+    margin-bottom: var(--spacing-8);
+  }
+
+  .cta-text p {
+    font-size: 15px;
+    color:     var(--color-muted-stone);
+  }
+
+  .cta-actions {
+    display:     flex;
+    flex-wrap:   wrap;
+    gap:         var(--spacing-12);
+    flex-shrink: 0;
+  }
+
+  /* ── Responsive: tablet ───────────────────────────────────── */
+  @media (max-width: 960px) {
+    .pc-dogs {
+      grid-template-columns: 1fr;
+    }
+
+    .pc-dogs-photo {
+      position:   relative;
+      min-height: 260px;
+      order:      -1;
+    }
+
+    .pc-photo-img {
+      position: static;
+      height:   260px;
+      width:    100%;
+    }
+
+    .pc-dogs-content {
+      padding: var(--spacing-32) var(--spacing-24);
+    }
+  }
+
+  @media (max-width: 720px) {
+    .pc-bottom-row {
+      grid-template-columns: 1fr;
+    }
+
+    .pc-combo,
+    .pc-cats {
+      height: auto;
+    }
+  }
+
+  /* ── Responsive: mobile ───────────────────────────────────── */
+  @media (max-width: 480px) {
+    .pc-dogs-content {
+      padding: var(--spacing-24) var(--spacing-20);
+    }
+
+    .pc-combo,
+    .pc-cats {
+      padding: var(--spacing-24) var(--spacing-20);
+    }
+
+    .pc-dogs-photo {
+      min-height: 200px;
+    }
+
+    .pc-photo-img {
+      height: 200px;
+    }
+
+    .pi { font-size: 14px; }
+
+    .prices-cta-inner {
+      flex-direction: column;
+      align-items:    flex-start;
+      padding:        var(--spacing-24) var(--spacing-20);
+    }
+  }
+</style>

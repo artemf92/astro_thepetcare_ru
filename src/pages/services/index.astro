@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AnimatedBlock from '../../components/ui/AnimatedBlock.astro';
+import Breadcrumb from '../../components/ui/Breadcrumb.astro';
+import { getCollection } from 'astro:content';
+
+const services = (await getCollection('services'))
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Услуги — ThePetCare"
+  description="Ветеринарные услуги для вашего питомца. Запись онлайн."
+>
+  <Breadcrumb items={[{ label: 'Услуги' }]} />
+
+  <section class="section">
+    <div class="container">
+      <AnimatedBlock>
+        <h1>Наши услуги</h1>
+      </AnimatedBlock>
+
+      <ul class="services-grid">
+        {services.map((service, i) => (
+          <AnimatedBlock tag="li" animation="fade-up" delay={i * 80}>
+            <a href={`/services/${service.slug ?? service.id.replace(/\.mdx?$/, '')}/`} class="service-card card">
+              {service.data.image && (
+                <img
+                  src={service.data.image}
+                  alt={service.data.h1}
+                  width={400}
+                  height={240}
+                  loading="lazy"
+                />
+              )}
+              <div class="service-card-body">
+                <h2 class="heading">{service.data.h1}</h2>
+                {service.data.excerpt && (
+                  <p class="caption" style="color: var(--color-muted-stone)">{service.data.excerpt}</p>
+                )}
+              </div>
+            </a>
+          </AnimatedBlock>
+        ))}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  h1 { font-family: var(--font-signifier); font-size: var(--text-display); margin-bottom: var(--spacing-64); }
+
+  .services-grid {
+    list-style: none;
+    display:    grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap:        var(--spacing-24);
+  }
+
+  .service-card {
+    display:    flex;
+    flex-direction: column;
+    overflow:   hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    padding:    0;
+  }
+  .service-card:hover {
+    transform:  translateY(-4px);
+    box-shadow:
+      rgba(4, 23, 43, 0.08) 0px 0px 0px 1px,
+      rgba(0, 0, 0, 0.15) 0px 24px 32px -8px;
+  }
+
+  .service-card img {
+    width:         100%;
+    height:        200px;
+    object-fit:    cover;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  }
+
+  .service-card-body {
+    padding:        var(--spacing-20);
+    display:        flex;
+    flex-direction: column;
+    gap:            var(--spacing-8);
+    flex:           1;
+  }
+</style>

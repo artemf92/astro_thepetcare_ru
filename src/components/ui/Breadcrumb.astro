@@ -1,0 +1,116 @@
+---
+// src/components/ui/Breadcrumb.astro
+import { site } from '../../data/site';
+
+export interface BreadcrumbItem {
+  label: string;
+  href?:  string;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+
+// «Главная» всегда первая
+const chain: BreadcrumbItem[] = [{ label: 'Главная', href: '/' }, ...items];
+
+const schemaData = {
+  '@context': 'https://schema.org',
+  '@type':    'BreadcrumbList',
+  itemListElement: chain.map((item, i) => {
+    const entry: Record<string, unknown> = {
+      '@type':  'ListItem',
+      position: i + 1,
+      name:     item.label,
+    };
+    if (item.href) {
+      entry.item = item.href.startsWith('http')
+        ? item.href
+        : `${site.url}${item.href}`;
+    }
+    return entry;
+  }),
+};
+---
+
+<nav aria-label="Хлебные крошки" class="breadcrumb-nav">
+  <div class="container">
+    <ol class="bc-list">
+      {chain.map((item, i) => {
+        const isLast = i === chain.length - 1;
+        return (
+          <li class="bc-item">
+            {isLast
+              ? <span class="bc-current" aria-current="page">{item.label}</span>
+              : (
+                <>
+                  <a href={item.href} class="bc-link">{item.label}</a>
+                  <span class="bc-sep" aria-hidden="true">›</span>
+                </>
+              )
+            }
+          </li>
+        );
+      })}
+    </ol>
+  </div>
+</nav>
+
+<script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+
+<style>
+  .breadcrumb-nav {
+    background:    var(--color-fog);
+    /* border-bottom: 1px solid rgba(0, 0, 0, .06); */
+    padding:       15px 0;
+  }
+
+  .bc-list {
+    display:     flex;
+    flex-wrap:   wrap;
+    align-items: center;
+    list-style:  none;
+    margin:      0;
+    padding:     0;
+    font-family: var(--font-sohne);
+    font-size:   13px;
+    line-height: 1;
+    gap:         0;
+  }
+
+  .bc-item {
+    display:     flex;
+    align-items: center;
+    min-width:   0;
+  }
+
+  .bc-link {
+    color:           var(--color-muted-stone);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    white-space:     nowrap;
+    transition:      color 0.15s;
+  }
+  .bc-link:hover { color: var(--color-ink); }
+
+  .bc-sep {
+    color:   var(--color-muted-stone);
+    opacity: 0.4;
+    padding: 0 6px;
+    user-select: none;
+  }
+
+  .bc-current {
+    color:         var(--color-ink);
+    overflow:      hidden;
+    text-overflow: ellipsis;
+    white-space:   nowrap;
+    max-width:     300px;
+  }
+
+  @media (max-width: 480px) {
+    .bc-current { max-width: 160px; }
+  }
+</style>

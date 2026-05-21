@@ -1,0 +1,37 @@
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: OAI-SearchBot
+User-agent: Google-Extended
+User-agent: anthropic-ai
+User-agent: ClaudeBot
+User-agent: CCBot
+User-agent: PerplexityBot
+User-agent: Diffbot
+User-agent: cohere-ai
+User-agent: FacebookBot
+User-agent: Bytespider
+User-agent: AwarioBot
+Disallow: /
+
+# Разрешаем индексацию в Google
+User-agent: Googlebot
+Allow: /
+
+# Запрещаем обучение ИИ Google
+User-agent: Google-Extended
+Disallow: /
+
+# Разрешаем индексацию в Yandex
+User-agent: Yandex
+Allow: /
+
+User-agent: *
+Disallow: /admin/ 
+Disallow: /pannel/ 
+Disallow: /wp-admin/ 
+Disallow: /login/ 
+Disallow: /cart/ 
+Disallow: /checkout/ 
+Disallow: /?
+
+Sitemap: https://thepetcare.ru/sitemap-index.xml

@@ -1,0 +1,112 @@
+---
+// Без серверной логики — чистый клиент
+---
+
+<div id="cookie-banner" style="display:none" role="dialog" aria-label="Уведомление о cookies">
+  <p>
+    На этом сайте используются файлы cookie и сервис веб-аналитики Яндекс Метрика (ООО «Яндекс», ОГРН 1027700229193) для улучшения работы сайта, статистики посещаемости и анализа пользовательской активности.
+Нажимая «Принять», вы даёте согласие на обработку cookie и иных пользовательских данных. Подробнее - <a href="/cookies-agreement/">Согласие на обработку ПДн посредством Яндекс Метрика</a> и <a href="/privacy-policy/">Политика конфиденциальности</a>.
+  </p>
+  <div class="cookie-btns">
+    <button id="cookie-accept">Принять</button>
+    <button id="cookie-decline">Отклонить</button>
+  </div>
+</div>
+
+<style>
+  #cookie-banner {
+    position: fixed;
+    bottom: var(--spacing-24);
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(1240px, calc(100vw - var(--spacing-32)));
+    z-index: 9999;
+
+    /* Default Card — DESIGN.md */
+    background:    var(--color-canvas);
+    border-radius: var(--radius-cards);
+    padding:       var(--spacing-20) var(--spacing-24);
+    box-shadow:    var(--shadow-subtle);
+
+    display:     flex;
+    align-items: center;
+    gap:         var(--spacing-16);
+  }
+
+  #cookie-banner p {
+    flex:        1;
+    margin:      0;
+    font-family: var(--font-sohne);
+    font-size:   var(--text-caption);
+    line-height: var(--leading-caption);
+    color:       var(--color-muted-stone);
+  }
+
+  #cookie-banner p a {
+    color:                  var(--color-ink);
+    text-decoration:        underline;
+    text-underline-offset:  2px;
+  }
+
+  .cookie-btns {
+    display:    flex;
+    gap:        var(--spacing-8);
+    flex-shrink: 0;
+  }
+
+  /* Filled Primary Button */
+  #cookie-accept {
+    padding:        10px var(--spacing-20);
+    background:     var(--color-ink);
+    color:          var(--color-canvas);
+    border:         none;
+    border-radius:  var(--radius-buttons);
+    font-family:    var(--font-sohne);
+    font-size:      var(--text-caption);
+    font-weight:    500;
+    letter-spacing: -0.009em;
+    cursor:         pointer;
+    transition:     opacity 0.15s ease;
+  }
+  #cookie-accept:hover { opacity: 0.85; }
+
+  /* Ghost Button */
+  #cookie-decline {
+    padding:        10px var(--spacing-20);
+    background:     transparent;
+    color:          var(--color-ink);
+    border:         1px solid var(--color-ink);
+    border-radius:  var(--radius-buttons);
+    font-family:    var(--font-sohne);
+    font-size:      var(--text-caption);
+    font-weight:    400;
+    letter-spacing: -0.009em;
+    cursor:         pointer;
+    transition:     opacity 0.15s ease;
+  }
+  #cookie-decline:hover { opacity: 0.65; }
+
+  @media (max-width: 480px) {
+    #cookie-banner { flex-direction: column; align-items: flex-start; }
+    .cookie-btns   { width: 100%; }
+    #cookie-accept,
+    #cookie-decline { flex: 1; text-align: center; }
+  }
+</style>
+
+<script>
+  const KEY    = 'cookie_consent';
+  const banner = document.getElementById('cookie-banner') as HTMLElement;
+
+  if (!localStorage.getItem(KEY)) banner.style.display = 'flex';
+
+  document.getElementById('cookie-accept')!.addEventListener('click', () => {
+    localStorage.setItem(KEY, 'accepted');
+    banner.style.display = 'none';
+  });
+
+  document.getElementById('cookie-decline')!.addEventListener('click', () => {
+    localStorage.setItem(KEY, 'declined');
+    banner.style.display = 'none';
+  });
+</script>

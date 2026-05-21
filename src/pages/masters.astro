@@ -1,0 +1,208 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AnimatedBlock from '../components/ui/AnimatedBlock.astro';
+import Breadcrumb from '../components/ui/Breadcrumb.astro';
+import { site } from '../data/site';
+
+const getPluralForm = (count: number, one: string, few: string, many: string) => {
+  if (count % 10 === 1 && count % 100 !== 11) return one;
+  if (count % 10 === 2 && count % 100 !== 12) return few;
+  if (count % 10 === 3 && count % 100 !== 13) return many;
+  return many;
+};
+
+const getExperience = (expFrom: string) => {
+  const years = new Date().getFullYear() - parseInt(expFrom);
+  if (years < 1) return 'Стаж менее года';
+  return `Стаж ${years} ${getPluralForm(years, 'год', 'года', 'лет')}`;
+};
+
+const masters = [
+  { name: 'Карина',  role: 'Топ-мастер',           expFrom: '2019', img: '/images/uploads/11266.webp' },
+  { name: 'Анна',    role: 'Мастер',                expFrom: '2024', img: '/images/uploads/11622.webp' },
+  { name: 'Надежда', role: 'Младший мастер',        expFrom: '2026', img: '/images/uploads/11623.webp' },
+  { name: 'Юлия',    role: 'Помощник топ-мастера',  expFrom: '2026', img: '/images/uploads/11624.webp' },
+  { name: 'Даниил',  role: 'Младший мастер',        expFrom: '2026', img: '/images/uploads/11625.webp' },
+];
+---
+
+<BaseLayout
+  title="Мастера груминг-салона The Pet Care в Калининграде"
+  description="Все мастера груминг-студии The Pet Care в Калининграде. Имена, специализация и опыт работы наших мастеров. Обращайтесь ☎ +7 (902) 416-99-59."
+>
+
+  <Breadcrumb items={[{ label: 'Наши мастера' }]} />
+
+  <!-- Hero -->
+  <section class="masters-hero section">
+    <div class="container">
+      <AnimatedBlock>
+        <h1 class="display">Наши мастера</h1>
+      </AnimatedBlock>
+    </div>
+  </section>
+
+  <!-- Masters grid -->
+  <section class="masters-section section">
+    <div class="container">
+      <div class="masters-grid">
+        {masters.map((m, i) => (
+          <AnimatedBlock animation="fade-up" delay={i * 80} tag="div" class="master-card">
+            <div class="master-photo-wrap">
+              {m.img
+                ? <img src={m.img} alt={m.name} width="240" height="280" loading={i < 3 ? 'eager' : 'lazy'} />
+                : <div class="master-photo-placeholder"></div>
+              }
+            </div>
+            <div class="master-info">
+              <h2 class="master-name">{m.name}</h2>
+              <p class="master-role">{m.role}</p>
+              <p class="master-exp">{getExperience(m.expFrom)}</p>
+            </div>
+          </AnimatedBlock>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="masters-cta section">
+    <div class="container">
+      <AnimatedBlock animation="fade-up">
+        <div class="masters-cta-inner card">
+          <div class="cta-text">
+            <h2>Записаться к мастеру</h2>
+            <p>Выберите удобное время онлайн или позвоните нам — подберём мастера под вашего питомца.</p>
+          </div>
+          <div class="cta-actions">
+            <a href={site.booking} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+              Записаться онлайн
+            </a>
+            <a href={`tel:${site.contacts.phoneRaw}`} class="btn btn-ghost">
+              {site.contacts.phone}
+            </a>
+          </div>
+        </div>
+      </AnimatedBlock>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  /* ── Hero ─────────────────────────────────────────── */
+  .masters-hero { background: var(--color-fog); }
+
+  /* ── Grid ─────────────────────────────────────────── */
+  .masters-section { background: var(--color-canvas); }
+
+  .masters-grid {
+    display:               grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap:                   var(--spacing-20);
+  }
+
+  .master-card {
+    display:        flex;
+    flex-direction: column;
+    gap:            var(--spacing-16);
+  }
+
+  .master-photo-wrap {
+    border-radius: var(--radius-3xl);
+    overflow:      hidden;
+    aspect-ratio:  3/4;
+    background:    var(--color-fog);
+  }
+
+  .master-photo-wrap img {
+    width:      100%;
+    height:     100%;
+    object-fit: cover;
+    display:    block;
+  }
+
+  .master-photo-placeholder {
+    width:      100%;
+    height:     100%;
+    background: linear-gradient(135deg, var(--color-fog) 0%, #e8e8ea 100%);
+  }
+
+  .master-info { display: flex; flex-direction: column; gap: 3px; }
+
+  .master-name {
+    font-family: var(--font-sohne);
+    font-size:   16px;
+    font-weight: 500;
+    color:       var(--color-ink);
+    margin:      0;
+  }
+
+  .master-role {
+    font-family: var(--font-sohne);
+    font-size:   14px;
+    color:       var(--color-muted-stone);
+    margin:      0;
+  }
+
+  .master-exp {
+    font-family: var(--font-sohne);
+    font-size:   13px;
+    font-weight: 450;
+    color:       var(--color-terracotta);
+    margin:      0;
+  }
+
+  /* ── CTA ──────────────────────────────────────────── */
+  .masters-cta { background: var(--color-fog); }
+
+  .masters-cta-inner {
+    display:         flex;
+    align-items:     center;
+    justify-content: space-between;
+    gap:             var(--spacing-24);
+    padding:         var(--spacing-32) var(--spacing-40);
+  }
+
+  .cta-text h2 {
+    font-family:   var(--font-sohne);
+    font-size:     22px;
+    font-weight:   500;
+    margin-bottom: var(--spacing-8);
+  }
+
+  .cta-text p {
+    font-size: 15px;
+    color:     var(--color-muted-stone);
+    margin:    0;
+  }
+
+  .cta-actions {
+    display:     flex;
+    flex-wrap:   wrap;
+    gap:         var(--spacing-12);
+    flex-shrink: 0;
+  }
+
+  /* ── Responsive ───────────────────────────────────── */
+  @media (max-width: 1024px) {
+    .masters-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    .masters-grid { grid-template-columns: repeat(3, 1fr); }
+
+    .masters-cta-inner {
+      flex-direction: column;
+      align-items:    flex-start;
+      padding:        var(--spacing-24);
+    }
+  }
+
+  @media (max-width: 540px) {
+    .masters-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap:                   var(--spacing-16);
+    }
+  }
+</style>

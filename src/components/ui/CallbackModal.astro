@@ -1,0 +1,471 @@
+---
+// CallbackModal.astro
+// Модальное окно «Заказать обратный звонок»
+// Env vars (Astro PUBLIC_ — доступны на клиенте):
+//   PUBLIC_TG_BOT_TOKEN   — токен бота
+//   PUBLIC_TG_CHAT_ID     — ID чата / канала получателя
+//   PUBLIC_RECAPTCHA_KEY  — site key reCAPTCHA v3
+---
+
+<div id="callback-modal" class="cb-overlay" role="dialog" aria-modal="true" aria-labelledby="cb-title" hidden>
+  <div class="cb-card">
+
+    <button class="cb-close" id="cb-close-btn" aria-label="Закрыть">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round">
+        <line x1="4" y1="4" x2="16" y2="16"/>
+        <line x1="16" y1="4" x2="4" y2="16"/>
+      </svg>
+    </button>
+
+    <!-- <p class="cb-eyebrow">Оставьте номер&nbsp;—<br>мы перезвоним</p> -->
+    <h2 class="cb-title" id="cb-title">Обратный звонок</h2>
+    <!-- <p class="cb-subtitle">Свяжемся в течение рабочего дня и ответим на все вопросы.</p> -->
+
+    <form id="cb-form" novalidate>
+
+      <div class="cb-field">
+        <label for="cb-phone" class="cb-label">Телефон</label>
+        <input
+          id="cb-phone"
+          name="phone"
+          type="tel"
+          inputmode="tel"
+          autocomplete="tel"
+          placeholder="+7 (___) ___-__-__"
+          class="cb-input"
+          maxlength="18"
+          required
+        />
+        <p class="cb-error" id="cb-phone-error" aria-live="polite"></p>
+      </div>
+
+      <button type="submit" class="btn btn-primary cb-submit" id="cb-submit-btn">
+        <span class="cb-submit-label">Перезвоните мне</span>
+        <span class="cb-submit-spinner" hidden aria-hidden="true"></span>
+      </button>
+
+    </form>
+
+    <!-- Состояние: успех -->
+    <div id="cb-success" class="cb-result cb-success" hidden>
+      <div class="cb-result-icon">✓</div>
+      <p class="cb-result-title">Заявка принята!</p>
+      <p class="cb-result-text">Мы перезвоним вам в ближайшее время.</p>
+    </div>
+
+    <!-- Состояние: ошибка -->
+    <div id="cb-fail" class="cb-result cb-fail" hidden>
+      <div class="cb-result-icon">!</div>
+      <p class="cb-result-title">Не удалось отправить</p>
+      <p class="cb-result-text">Попробуйте ещё раз или позвоните нам напрямую.</p>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  /* ── Overlay ─────────────────────────────────────────── */
+  .cb-overlay {
+    position:        fixed;
+    inset:           0;
+    z-index:         1000;
+    background:      rgba(30, 26, 22, 0.55);
+    backdrop-filter: blur(4px);
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    padding:         var(--spacing-24);
+    opacity:         0;
+    transition:      opacity 0.25s ease;
+  }
+  .cb-overlay.cb-visible { opacity: 1; }
+
+  /* ── Card ─────────────────────────────────────────────── */
+  .cb-card {
+    position:         relative;
+    background:       var(--color-canvas);
+    border-radius:    var(--radius-cards);
+    padding:          var(--spacing-40) var(--spacing-40);
+    width:            100%;
+    max-width:        440px;
+    box-shadow:       0 24px 64px rgba(0,0,0,0.18);
+    transform:        translateY(16px);
+    transition:       transform 0.28s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+  .cb-overlay.cb-visible .cb-card { transform: translateY(0); }
+
+  /* ── Close ────────────────────────────────────────────── */
+  .cb-close {
+    position:         absolute;
+    top:              var(--spacing-16);
+    right:            var(--spacing-16);
+    background:       none;
+    border:           none;
+    cursor:           pointer;
+    color:            var(--color-muted-stone);
+    padding:          6px;
+    border-radius:    50%;
+    transition:       color 0.15s, background 0.15s;
+    line-height:      1;
+  }
+  .cb-close:hover { color: var(--color-ink); background: var(--color-fog); }
+
+  /* ── Typography ───────────────────────────────────────── */
+  .cb-eyebrow {
+    font-family:    var(--font-sohne);
+    font-size:      11px;
+    font-weight:    500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color:          var(--color-terracotta);
+    margin-bottom:  var(--spacing-8);
+  }
+  .cb-title {
+    font-family:   var(--font-signifier);
+    font-size:     clamp(22px, 5vw, 28px);
+    font-weight:   400;
+    line-height:   1.25;
+    color:         var(--color-ink);
+    margin-bottom: var(--spacing-8);
+  }
+  .cb-subtitle {
+    font-family:   var(--font-sohne);
+    font-size:     14px;
+    color:         var(--color-muted-stone);
+    line-height:   1.6;
+    margin-bottom: var(--spacing-32);
+  }
+
+  /* ── Field ────────────────────────────────────────────── */
+  .cb-field { margin-bottom: var(--spacing-16); }
+
+  .cb-label {
+    display:        block;
+    font-family:    var(--font-sohne);
+    font-size:      12px;
+    font-weight:    500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color:          var(--color-muted-stone);
+    margin-bottom:  var(--spacing-8);
+  }
+
+  .cb-input {
+    width:         100%;
+    font-family:   var(--font-sohne);
+    font-size:     17px;
+    font-weight:   400;
+    color:         var(--color-ink);
+    background:    var(--color-fog);
+    border:        1.5px solid transparent;
+    border-radius: var(--radius-inputs, 8px);
+    padding:       14px 16px;
+    outline:       none;
+    transition:    border-color 0.15s;
+    box-sizing:    border-box;
+  }
+  .cb-input::placeholder { color: var(--color-muted-stone); opacity: 0.6; }
+  .cb-input:focus        { border-color: var(--color-terracotta); }
+  .cb-input.cb-invalid   { border-color: #d94f38; }
+
+  .cb-error {
+    font-family:  var(--font-sohne);
+    font-size:    12px;
+    color:        #d94f38;
+    margin-top:   6px;
+    min-height:   16px;
+  }
+
+  /* ── reCAPTCHA note ────────────────────────────────────── */
+  .cb-recaptcha-note {
+    font-family:   var(--font-sohne);
+    font-size:     11px;
+    color:         var(--color-muted-stone);
+    margin-bottom: var(--spacing-24);
+  }
+  .cb-recaptcha-note a { color: inherit; text-decoration: underline; }
+
+  /* ── Submit ────────────────────────────────────────────── */
+  .cb-submit {
+    width:    100%;
+    position: relative;
+  }
+  .cb-submit:disabled { opacity: 0.65; cursor: not-allowed; }
+
+  .cb-submit-spinner {
+    display:       inline-block;
+    width:         18px;
+    height:        18px;
+    border:        2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation:     cb-spin 0.7s linear infinite;
+    vertical-align: middle;
+  }
+  @keyframes cb-spin { to { transform: rotate(360deg); } }
+
+  /* ── Result screens ────────────────────────────────────── */
+  .cb-result {
+    text-align: center;
+    padding:    var(--spacing-24) 0 var(--spacing-8);
+  }
+  .cb-result-icon {
+    width:         56px;
+    height:        56px;
+    border-radius: 50%;
+    display:       flex;
+    align-items:   center;
+    justify-content: center;
+    font-size:     26px;
+    font-weight:   600;
+    margin:        0 auto var(--spacing-16);
+  }
+  .cb-success .cb-result-icon { background: #e8f5e9; color: #388e3c; }
+  .cb-fail    .cb-result-icon { background: #fde8e6; color: #d94f38; }
+
+  .cb-result-title {
+    font-family:   var(--font-sohne);
+    font-size:     18px;
+    font-weight:   500;
+    color:         var(--color-ink);
+    margin-bottom: var(--spacing-8);
+  }
+  .cb-result-text {
+    font-family: var(--font-sohne);
+    font-size:   14px;
+    color:       var(--color-muted-stone);
+    line-height: 1.6;
+  }
+
+  /* ── Adaptive ──────────────────────────────────────────── */
+  @media (max-width: 480px) {
+    .cb-card {
+      padding:       var(--spacing-32) var(--spacing-24);
+      border-radius: var(--radius-cards) var(--radius-cards) 0 0;
+      position:      fixed;
+      bottom:        0;
+      left:          0;
+      right:         0;
+      max-width:     100%;
+      width:         100%;
+      transform:     translateY(100%);
+    }
+    .cb-overlay.cb-visible .cb-card { transform: translateY(0); }
+    .cb-overlay {
+      padding:    0;
+      align-items: flex-end;
+    }
+  }
+</style>
+
+<script>
+  // ── Env vars ─────────────────────────────────────────────
+  const RC_KEY = import.meta.env.PUBLIC_RECAPTCHA_KEY ?? '';
+
+  // ── Helpers ─────────────────────────────────────────────
+  function formatPhone(raw: string): string {
+    const digits = raw.replace(/\D/g, '');
+    const d = digits.startsWith('8') ? '7' + digits.slice(1) : digits;
+    const n = d.startsWith('7') ? d : '7' + d;
+    const p = n.slice(0, 11);
+
+    let result = '';
+    if (p.length === 0)  return '';
+    result += '+7';
+    if (p.length > 1)  result += ' (' + p.slice(1, Math.min(4, p.length));
+    if (p.length >= 4) result += ')';
+    if (p.length > 4)  result += ' '  + p.slice(4, Math.min(7, p.length));
+    if (p.length > 7)  result += '-'  + p.slice(7, Math.min(9, p.length));
+    if (p.length > 9)  result += '-'  + p.slice(9, 11);
+    return result;
+  }
+
+  function getDigits(str: string): string {
+    return str.replace(/\D/g, '');
+  }
+
+  // ── reCAPTCHA v3 lazy loader ─────────────────────────────
+  let rcLoaded = false;
+
+  function loadRecaptcha(): Promise<void> {
+    if (!RC_KEY || rcLoaded) return Promise.resolve();
+    return new Promise(resolve => {
+      const s = document.createElement('script');
+      s.src    = `https://www.google.com/recaptcha/api.js?render=${RC_KEY}`;
+      s.async  = true;
+      s.onload = () => { rcLoaded = true; resolve(); };
+      s.onerror = () => { resolve(); };
+      document.head.appendChild(s);
+    });
+  }
+
+  async function getRecaptchaToken(): Promise<string> {
+    if (!RC_KEY) return '';
+    await loadRecaptcha();
+    try {
+      // @ts-ignore
+      return await window.grecaptcha.execute(RC_KEY, { action: 'callback_form' });
+    } catch {
+      return '';
+    }
+  }
+
+  // ── Отправка на серверный endpoint ───────────────────────
+  async function submitToApi(phone: string, recaptchaToken: string): Promise<boolean> {
+    try {
+      const res = await fetch('/api/callback', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ phone, recaptchaToken }),
+      });
+      const data = await res.json() as { ok: boolean };
+      return data.ok === true;
+    } catch {
+      return false;
+    }
+  }
+
+  // ── Modal DOM ────────────────────────────────────────────
+  const overlay   = document.getElementById('callback-modal')     as HTMLDivElement;
+  const card      = overlay?.querySelector('.cb-card')             as HTMLDivElement;
+  const form      = document.getElementById('cb-form')            as HTMLFormElement;
+  const phoneInput= document.getElementById('cb-phone')           as HTMLInputElement;
+  const phoneErr  = document.getElementById('cb-phone-error')     as HTMLParagraphElement;
+  const submitBtn = document.getElementById('cb-submit-btn')      as HTMLButtonElement;
+  const submitLbl = submitBtn?.querySelector('.cb-submit-label')   as HTMLSpanElement;
+  const submitSpin= submitBtn?.querySelector('.cb-submit-spinner') as HTMLSpanElement;
+  const successEl = document.getElementById('cb-success')         as HTMLDivElement;
+  const failEl    = document.getElementById('cb-fail')            as HTMLDivElement;
+
+  function openModal() {
+    if (!overlay) return;
+    overlay.hidden = false;
+    // rAF, чтобы дать браузеру применить display перед transition
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        overlay.classList.add('cb-visible');
+        phoneInput?.focus();
+      });
+    });
+    document.body.style.overflow = 'hidden';
+    // Загружаем reCAPTCHA заранее
+    loadRecaptcha();
+  }
+
+  function closeModal() {
+    if (!overlay) return;
+    overlay.classList.remove('cb-visible');
+    document.body.style.overflow = '';
+    setTimeout(() => {
+      overlay.hidden = true;
+      // Сбрасываем форму при следующем открытии
+      form?.reset();
+      phoneInput?.classList.remove('cb-invalid');
+      if (phoneErr) phoneErr.textContent = '';
+      form?.removeAttribute('hidden');
+      successEl && (successEl.hidden = true);
+      failEl    && (failEl.hidden = true);
+      submitBtn && (submitBtn.disabled = false);
+      submitLbl && (submitLbl.hidden = false);
+      submitSpin && (submitSpin.hidden = true);
+    }, 280);
+  }
+
+  // Триггеры открытия
+  document.addEventListener('click', (e) => {
+    const el = (e.target as HTMLElement).closest('[data-open-callback]');
+    if (el) { e.preventDefault(); openModal(); }
+  });
+
+  // Закрытие по кнопке, overlay click, Escape
+  document.getElementById('cb-close-btn')?.addEventListener('click', closeModal);
+
+  overlay?.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !overlay?.hidden) closeModal();
+  });
+
+  // ── Маска телефона ───────────────────────────────────────
+  phoneInput?.addEventListener('input', (e) => {
+    const inp    = e.target as HTMLInputElement;
+    const cursor = inp.selectionStart ?? inp.value.length;
+    const before = inp.value.slice(0, cursor);
+    const digBefore = getDigits(before).length;
+
+    inp.value = formatPhone(inp.value);
+
+    // Восстанавливаем позицию курсора приближённо
+    let pos = 0, count = 0;
+    for (let i = 0; i < inp.value.length; i++) {
+      if (/\d/.test(inp.value[i])) count++;
+      if (count >= digBefore) { pos = i + 1; break; }
+    }
+    if (count < digBefore) pos = inp.value.length;
+    inp.setSelectionRange(pos, pos);
+  });
+
+  phoneInput?.addEventListener('keydown', (e) => {
+    // При нажатии Backspace в начале "+7 (" — не удаляем префикс
+    if (e.key === 'Backspace') {
+      const start = (e.target as HTMLInputElement).selectionStart ?? 0;
+      if (start <= 4) e.preventDefault();
+    }
+  });
+
+  phoneInput?.addEventListener('focus', () => {
+    if (!phoneInput.value) phoneInput.value = '+7 (';
+  });
+
+  phoneInput?.addEventListener('blur', () => {
+    if (phoneInput.value === '+7 (') phoneInput.value = '';
+  });
+
+  // ── Отправка формы ───────────────────────────────────────
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Валидация
+    const phone = phoneInput.value.trim();
+    const digits = getDigits(phone);
+    if (digits.length < 11) {
+      phoneInput.classList.add('cb-invalid');
+      phoneErr.textContent = 'Введите полный номер телефона';
+      phoneInput.focus();
+      return;
+    }
+    phoneInput.classList.remove('cb-invalid');
+    phoneErr.textContent = '';
+
+    // Блокируем кнопку
+    submitBtn.disabled = true;
+    submitLbl.hidden   = true;
+    submitSpin.hidden  = false;
+
+    try {
+      const token = await getRecaptchaToken();
+      const ok    = await submitToApi(phone, token);
+
+      form.hidden = true;
+      if (ok) {
+        successEl.hidden = false;
+        // Автозакрытие через 3 с
+        setTimeout(closeModal, 3000);
+      } else {
+        failEl.hidden = false;
+        submitBtn.disabled = false;
+        submitLbl.hidden   = false;
+        submitSpin.hidden  = true;
+      }
+    } catch {
+      form.hidden       = false;
+      failEl.hidden     = false;
+      submitBtn.disabled = false;
+      submitLbl.hidden   = false;
+      submitSpin.hidden  = true;
+    }
+  });
+</script>

@@ -1,0 +1,92 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AnimatedBlock from '../components/ui/AnimatedBlock.astro';
+import Breadcrumb from '../components/ui/Breadcrumb.astro';
+
+export async function getStaticPaths() {
+  // Страницы, которые не должны генерировать маршруты
+  const EXCLUDED_SLUGS = new Set([
+    'corporate-3-landing',       // WP-шаблон темы, не нужен
+    'rezhim-tehobsluzhivaniya',  // страница тех.обслуживания WP
+    'prices',                    // перекрыто src/pages/prices.astro
+    'contact',                   // перекрыто src/pages/contact.astro
+    'masters',                   // перекрыто src/pages/masters.astro
+  ]);
+
+  const pages = await getCollection('pages');
+  return pages
+    .filter(entry => !EXCLUDED_SLUGS.has(entry.slug ?? entry.id.replace(/\.mdx?$/, '')))
+    .map(entry => ({
+      params: { slug: entry.slug ?? entry.id.replace(/\.mdx?$/, '') },
+      props:  { entry },
+    }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const { h1, metaTitle, metaDescription, ogImage } = entry.data;
+---
+
+<BaseLayout title={metaTitle} description={metaDescription} ogImage={ogImage}>
+
+  <Breadcrumb items={[{ label: h1 }]} />
+
+  <article class="section">
+    <div class="container">
+      <AnimatedBlock>
+        <h1 class="display">{h1}</h1>
+      </AnimatedBlock>
+      <AnimatedBlock animation="fade-up" delay={100}>
+        <div class="prose">
+          <Content />
+        </div>
+      </AnimatedBlock>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  h1    { margin-bottom: var(--spacing-40); }
+  .prose {
+    max-width:   1200px;
+    min-height: 300px;
+    font-size:   16px;
+    line-height: 1.75;
+    color:       var(--color-muted-stone);
+  }
+  /* Content() из .md — узлы без data-astro-cid; :global() чтобы стили доходили до разметки markdown */
+  .prose :global(h2), .prose :global(h3) {
+    font-family: var(--font-sohne);
+    font-weight: 500;
+    color:       var(--color-ink);
+    margin-top:  var(--spacing-40);
+    margin-bottom: var(--spacing-16);
+  }
+  .prose :global(p) { margin-bottom: var(--spacing-16); }
+  .prose :global(ul) { list-style: initial; padding-left: var(--spacing-24); margin-bottom: var(--spacing-16); }
+  .prose :global(ol) { list-style: decimal; padding-left: var(--spacing-24); margin-bottom: var(--spacing-16); }
+  .prose :global(li) { margin-bottom: var(--spacing-8); }
+  .prose :global(img) { border-radius: var(--radius-images); margin-block: var(--spacing-32); }
+  .prose :global(img.float-img) {
+    float:          right;
+    max-width:      min(410px, 42%);
+    height:         auto;
+    margin:         var(--spacing-8) 0 var(--spacing-16) var(--spacing-24);
+    margin-block:   var(--spacing-8);
+    vertical-align: middle;
+  }
+  @media (max-width: 540px) {
+    .prose :global(img.float-img) {
+      float:      none;
+      display:    block;
+      max-width:  100%;
+      margin:     0 auto var(--spacing-24);
+    }
+  }
+  .prose:has(:global(img.float-img))::after {
+    content: '';
+    display: table;
+    clear:   both;
+  }
+</style>

@@ -1,0 +1,425 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AnimatedBlock from '../../components/ui/AnimatedBlock.astro';
+import Breadcrumb from '../../components/ui/Breadcrumb.astro';
+import { site } from '../../data/site';
+
+export async function getStaticPaths() {
+  const services = await getCollection('services');
+  return services.map(entry => ({
+    params: { slug: entry.slug ?? entry.id.replace(/\.mdx?$/, '') },
+    props:  { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const {
+  h1,
+  metaTitle,
+  metaDescription,
+  image,
+  price,
+  category,
+  excerpt,
+  portfolioImages,
+  bottomCtaTitle,
+  bottomCtaSub,
+} = entry.data;
+
+const portfolioGallery = (portfolioImages ?? []).filter((x) => x.image?.trim());
+
+const DEFAULT_BOTTOM_CTA_TITLE = 'Готовы записать питомца?';
+const DEFAULT_BOTTOM_CTA_SUB = '';
+const bottomCtaTitleResolved = bottomCtaTitle?.trim() || DEFAULT_BOTTOM_CTA_TITLE;
+const bottomCtaSubResolved = bottomCtaSub?.trim() || DEFAULT_BOTTOM_CTA_SUB;
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/** Многострочный plain text → <p>; если уже есть HTML-теги — как есть (доверенный контент из коллекции). */
+function excerptToHtml(raw: string | undefined): string {
+  if (!raw?.trim()) return '';
+  const t = raw.trim();
+  if (/<[a-z][\s\S]*>/i.test(t)) return t;
+  return t
+    .split(/\n\s*\n+/)
+    .map((block) => block.trim().replace(/\n/g, ' ').replace(/\s+/g, ' '))
+    .filter(Boolean)
+    .map((block) => `<p>${escapeHtml(block)}</p>`)
+    .join('');
+}
+
+const excerptHtml = excerptToHtml(excerpt);
+---
+
+<BaseLayout title={metaTitle} description={metaDescription} ogImage={image}>
+
+  <Breadcrumb items={[{ label: 'Услуги', href: '/services/' }, { label: h1 }]} />
+
+  <article>
+
+    <!-- Hero -->
+    <section class="service-hero section">
+      <div class="container">
+        <div class="service-hero-inner">
+
+          <div class="service-hero-content">
+            <AnimatedBlock>
+              {category && <p class="section-eyebrow">{category}</p>}
+              <h1 class="display service-hero-title">{h1}</h1>
+              {excerptHtml && <div class="service-hero-sub" set:html={excerptHtml} />}
+            </AnimatedBlock>
+
+            {price && (
+              <AnimatedBlock animation="fade-up" delay={80}>
+                <p class="service-price">{price}</p>
+              </AnimatedBlock>
+            )}
+
+            <AnimatedBlock animation="fade-up" delay={140}>
+              <div class="service-cta-row">
+                <button class="btn btn-primary" data-open-callback>
+                  Записаться
+                </button>
+              </div>
+            </AnimatedBlock>
+          </div>
+
+          {image && (
+            <AnimatedBlock animation="fade-left" delay={100} class="service-hero-img-wrap">
+              <img
+                src={image}
+                alt={h1}
+                class="service-hero-img"
+                width={560}
+                height={480}
+                loading="eager"
+              />
+            </AnimatedBlock>
+          )}
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Content -->
+    <section class="service-body section">
+      <div class="container">
+        <AnimatedBlock animation="fade-up">
+          <div class="prose">
+            <Content />
+          </div>
+        </AnimatedBlock>
+
+        {portfolioGallery.length > 0 && (
+          <AnimatedBlock animation="fade-up" delay={60}>
+            <div class="service-portfolio">
+              <p class="service-portfolio-eyebrow">Галерея</p>
+              <h2 class="service-portfolio-title">Примеры работ</h2>
+              <div class="service-portfolio-grid">
+                {portfolioGallery.map((item, i) => (
+                  <a
+                    class="service-portfolio-card"
+                    href={item.image}
+                    data-fancybox="service-portfolio"
+                    data-caption={`${h1} — пример работы ${i + 1}`}
+                  >
+                    <img
+                      src={item.image}
+                      alt={`Примеры работ: ${h1}, фото ${i + 1}`}
+                      width={400}
+                      height={500}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </AnimatedBlock>
+        )}
+
+        <!-- Bottom CTA -->
+        <AnimatedBlock animation="fade-up" delay={100}>
+          <div class="service-bottom-cta card">
+            <div class="bottom-cta-text">
+              <p class="bottom-cta-title">{bottomCtaTitleResolved}</p>
+              {bottomCtaSubResolved && <p class="bottom-cta-sub">{bottomCtaSubResolved}</p>}
+            </div>
+            <div class="bottom-cta-actions">
+              <button class="btn btn-primary btn-cta" data-open-callback>
+                <span class="btn-cta-icon"></span> Записаться
+              </button>
+            </div>
+          </div>
+        </AnimatedBlock>
+      </div>
+    </section>
+
+  </article>
+</BaseLayout>
+
+<script>
+  import { Fancybox } from '@fancyapps/ui/dist/fancybox/';
+  import '@fancyapps/ui/dist/fancybox/fancybox.css';
+
+  /** Делегирование на document.body — Fancybox корректно находит группу по `data-fancybox`. */
+  const PORTFOLIO_SEL = '[data-fancybox="service-portfolio"]';
+
+  function bindServicePortfolioLightbox() {
+    if (!document.querySelector(PORTFOLIO_SEL)) return;
+    Fancybox.bind(document.body, PORTFOLIO_SEL, {
+      theme: 'light',
+      Carousel: {
+        infinite: false,
+      },
+    });
+  }
+
+  bindServicePortfolioLightbox();
+</script>
+
+<style>
+  /* ── Hero ─────────────────────────────────────────── */
+  .service-hero { background: var(--color-fog); }
+
+  .service-hero-inner {
+    display:     grid;
+    grid-template-columns: 1fr 1fr;
+    gap:         var(--spacing-64);
+    align-items: center;
+  }
+
+  .service-hero-content {
+    display:        flex;
+    flex-direction: column;
+    gap:            var(--spacing-24);
+  }
+
+  .service-hero-title {
+    margin-bottom: var(--spacing-40);
+  }
+
+  .service-price {
+    font-size:   clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    font-family: var(--font-sohne);
+    color:       var(--color-ink);
+    letter-spacing: -0.01em;
+  }
+
+  .service-cta-row {
+    display:   flex;
+    flex-wrap: wrap;
+    gap:       var(--spacing-12);
+  }
+
+  .service-hero-sub {
+    font-size:   17px;
+    color:       var(--color-muted-stone);
+    line-height: 1.6;
+    max-width:   560px;
+  }
+
+  .service-hero-sub :global(p) {
+    margin: 0 0 var(--spacing-12);
+  }
+
+  .service-hero-sub :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  /* Hero image */
+  .service-hero-img-wrap { border-radius: var(--radius-cards); overflow: hidden; }
+
+  .service-hero-img {
+    width:         100%;
+    height:        440px;
+    object-fit:    cover;
+    display:       block;
+    border-radius: var(--radius-cards);
+  }
+
+  /* ── Body prose ───────────────────────────────────── */
+  .service-body { background: var(--color-canvas); }
+
+  .prose {
+    max-width:   1200px;
+    font-size:   16px;
+    line-height: 1.8;
+    color:       var(--color-muted-stone);
+    margin-bottom: var(--spacing-64);
+  }
+
+  .prose :global(h2),
+  .prose :global(h3) {
+    font-family:   var(--font-sohne);
+    font-weight:   500;
+    color:         var(--color-ink);
+    margin-top:    var(--spacing-40);
+    margin-bottom: var(--spacing-12);
+  }
+  .prose :global(h2) { font-size: 22px; }
+  .prose :global(h3) { font-size: 18px; }
+
+  .prose :global(p)  { margin-bottom: var(--spacing-16); }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left:  var(--spacing-24);
+    margin-bottom: var(--spacing-16);
+  }
+
+  .prose :global(li)      { margin-bottom: var(--spacing-8); }
+  .prose :global(strong)  { font-weight: 500; color: var(--color-ink); }
+
+  /* ── Портфолио «Примеры работ» ─────────────────────── */
+  .service-portfolio {
+    max-width:     1200px;
+    margin-bottom: var(--spacing-64);
+  }
+
+  .service-portfolio-eyebrow {
+    font-family:    var(--font-sohne);
+    font-size:      13px;
+    font-weight:    500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color:          var(--color-light-steel);
+    margin-bottom:  var(--spacing-8);
+  }
+
+  .service-portfolio-title {
+    font-family:   var(--font-sohne);
+    font-size:     clamp(20px, 2.5vw, 26px);
+    font-weight:   600;
+    color:         var(--color-ink);
+    letter-spacing: -0.02em;
+    margin-bottom: var(--spacing-28);
+  }
+
+  .service-portfolio-grid {
+    display:               grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap:                   var(--spacing-16);
+  }
+
+  .service-portfolio-card {
+    display:       block;
+    border-radius: var(--radius-images);
+    overflow:      hidden;
+    aspect-ratio:  4 / 5;
+    background:    var(--color-fog);
+    outline:       none;
+    transition:    opacity 0.15s ease, transform 0.15s ease;
+  }
+
+  .service-portfolio-card:hover {
+    opacity:   0.92;
+    transform: scale(1.01);
+  }
+
+  .service-portfolio-card:focus-visible {
+    outline:        2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+
+  .service-portfolio-card img {
+    width:      100%;
+    height:     100%;
+    object-fit: cover;
+    display:    block;
+  }
+
+  /* ── Bottom CTA ───────────────────────────────────── */
+  .service-bottom-cta {
+    display:         flex;
+    align-items:     center;
+    justify-content: space-between;
+    gap:             var(--spacing-24);
+    padding:         var(--spacing-32) var(--spacing-40);
+    background:      var(--color-ink);
+    border-radius:   var(--radius-cards);
+  }
+
+  .bottom-cta-title {
+    max-width: 450px;
+    font-size:   24px;
+    font-weight: 500;
+    color:       #fff;
+    margin-bottom: var(--spacing-4);
+  }
+
+  .bottom-cta-sub {
+    font-size: 14px;
+    color:     rgba(255, 255, 255, 0.6);
+  }
+
+  .btn-cta {
+    padding: 16px 32px;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.009em;
+    border-radius: 9999px;
+    background: var(--color-warm-mist);
+    color: var(--color-ink);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-8);
+  }
+  .btn-cta-icon {
+    font-size: 20px;
+    display: inline-block;
+    width: 26px;
+    height: 1px;
+    background-color: var(--color-ink);
+  }
+
+  .bottom-cta-actions {
+    display:   flex;
+    flex-wrap: wrap;
+    gap:       var(--spacing-12);
+    flex-shrink: 0;
+  }
+
+  .service-bottom-cta .btn-ghost {
+    color:         rgba(255, 255, 255, 0.8);
+    border-color:  rgba(255, 255, 255, 0.25);
+  }
+  .service-bottom-cta .btn-ghost:hover {
+    color:         #fff;
+    border-color:  rgba(255, 255, 255, 0.6);
+    background:    rgba(255, 255, 255, 0.08);
+  }
+
+  /* ── Responsive ───────────────────────────────────── */
+  @media (max-width: 768px) {
+    .service-hero-inner {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-32);
+    }
+
+    .service-hero-img {
+      height: 280px;
+      order:  -1;
+    }
+
+    .service-bottom-cta {
+      flex-direction: column;
+      align-items:    flex-start;
+      padding:        var(--spacing-24);
+    }
+
+    .service-portfolio-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:                   var(--spacing-12);
+    }
+  }
+</style>

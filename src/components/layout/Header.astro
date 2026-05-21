@@ -1,0 +1,417 @@
+---
+import { site } from '../../data/site';
+import { mainNav, bookingUrl } from '../../data/navigation';
+
+const currentPath = Astro.url.pathname;
+
+function normalizePath(p: string): string {
+  const t = p.trim();
+  if (t === '' || t === '/') return '/';
+  return t.replace(/\/+$/, '');
+}
+
+function isCurrentPath(href: string): boolean {
+  return normalizePath(currentPath) === normalizePath(href);
+}
+---
+
+<header class="site-header">
+  <div class="header-inner container">
+
+    <!-- Логотип -->
+    <a href="/" class="logo-link" aria-label={site.logo.alt}>
+      <img
+        src={site.logo.src}
+        alt={site.logo.alt}
+        width={site.logo.width}
+        height={site.logo.height}
+        loading="eager"
+        decoding="async"
+      />
+    </a>
+
+    <!-- Навигация -->
+    <nav class="main-nav" aria-label="Основная навигация" id="main-nav">
+      <ul>
+        {mainNav.map((item) => (
+          <li class={item.children?.length ? 'has-dropdown' : ''}>
+            <a href={item.url}>{item.title}</a>
+            {item.children?.length && (
+              <ul class="dropdown" aria-label={`Подменю: ${item.title}`}>
+                {item.children.map((child) => {
+                  const current = isCurrentPath(child.url);
+                  return (
+                    <li>
+                      <a
+                        href={child.url}
+                        class:list={['dropdown-link', { 'is-current': current }]}
+                        aria-current={current ? 'page' : undefined}
+                      >
+                        {child.title}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <!-- Телефон + CTA -->
+    <div class="header-actions">
+      {site.contacts.phoneRaw && (
+        <a href={`tel:${site.contacts.phoneRaw}`} class="header-phone">
+          {site.contacts.phone}
+        </a>
+      )}
+      <a href={bookingUrl} class="btn btn-primary" target="_blank" rel="noopener noreferrer">Записаться</a>
+    </div>
+
+    <!-- Бургер -->
+    <button
+      class="burger"
+      id="burger-btn"
+      aria-label="Открыть меню"
+      aria-expanded="false"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+  </div>
+</header>
+
+<!-- Мобильный drawer — вне <header>, не попадает под backdrop-filter containing block -->
+<div id="mobile-drawer" class="mobile-drawer" aria-hidden="true">
+  <nav aria-label="Мобильная навигация">
+    <ul>
+      {mainNav.map((item) => (
+        <li class={item.children?.length ? 'drawer-has-children' : ''}>
+          <a href={item.url} class="drawer-link">{item.title}</a>
+          {item.children?.length ? (
+            <ul class="drawer-subnav" aria-label={`Подменю: ${item.title}`}>
+              {item.children.map((child) => {
+                const current = isCurrentPath(child.url);
+                return (
+                  <li>
+                    <a
+                      href={child.url}
+                      class:list={['drawer-sublink', { 'is-current': current }]}
+                      aria-current={current ? 'page' : undefined}
+                    >
+                      {child.title}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : null}
+        </li>
+      ))}
+    </ul>
+  </nav>
+  <div class="drawer-footer">
+    {site.contacts.phoneRaw && (
+      <a href={`tel:${site.contacts.phoneRaw}`} class="drawer-phone">
+        {site.contacts.phone}
+      </a>
+    )}
+    <a href={bookingUrl} class="btn btn-primary drawer-cta" target="_blank" rel="noopener noreferrer">
+      Записаться онлайн
+    </a>
+  </div>
+</div>
+
+<style>
+  .site-header {
+    position:       sticky;
+    top:            0;
+    z-index:        100;
+    background:     var(--color-canvas);
+    border-bottom:  1px solid rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(8px);
+  }
+
+  .header-inner {
+    height:         64px;
+    display:        flex;
+    align-items:    center;
+    gap:            var(--spacing-40);
+  }
+
+  /* Лого */
+  .logo-link { display: flex; align-items: center; flex-shrink: 0; }
+  .logo-link img { height: 36px; width: auto; }
+
+  /* Навигация */
+  /* только корневой список; вложенный .dropdown — отдельные правила (иначе display:flex перебивает display:none) */
+  .main-nav > ul {
+    list-style: none;
+    display:    flex;
+    gap:        var(--spacing-32);
+    align-items: center;
+  }
+
+  .main-nav a {
+    font-family:    var(--font-sohne);
+    font-size:      15px;
+    font-weight:    450;
+    letter-spacing: -0.009em;
+    color:          var(--color-ink);
+    transition:     opacity 0.15s ease;
+    white-space:    nowrap;
+  }
+  .main-nav a:hover { opacity: 0.6; }
+
+  /* Дропдаун */
+  .has-dropdown { position: relative; }
+
+  /* Мост между ссылкой и панелью: иначе курсор в зазоре не попадает в li и :hover слетает */
+  .has-dropdown::after {
+    content:    '';
+    position:   absolute;
+    left:       0;
+    right:      0;
+    top:        100%;
+    height:     12px;
+    z-index:    1;
+  }
+
+  .has-dropdown:hover,
+  .has-dropdown:focus-within {
+    z-index: 10;
+  }
+
+  .dropdown {
+    display:        none;
+    position:       absolute;
+    top:            calc(100% + 8px);
+    left:           -12px;
+    z-index:        2;
+    background:     var(--color-canvas);
+    border-radius:  var(--radius-cards);
+    box-shadow:     var(--shadow-subtle);
+    padding:        var(--spacing-8);
+    flex-direction: column;
+    gap:            2px;
+    min-width:      220px;
+  }
+
+  .has-dropdown:hover .dropdown,
+  .has-dropdown:focus-within .dropdown { display: flex; }
+  .has-dropdown:hover a[href="/services/"]+.dropdown,
+  .has-dropdown:focus-within a[href="/services/"]+.dropdown { display: grid; grid-template-columns: repeat(2, 1fr); }
+
+  .dropdown li a.dropdown-link {
+    display:        block;
+    padding:        var(--spacing-8) var(--spacing-12);
+    border-radius:  var(--radius-xl);
+    font-size:      14px;
+    white-space:    nowrap;
+  }
+  .dropdown li a.dropdown-link:hover { background: var(--color-fog); opacity: 1; }
+  .dropdown li a.dropdown-link.is-current,
+  .dropdown li a.dropdown-link[aria-current='page'] {
+    background:   var(--color-warm-mist);
+    font-weight:  500;
+    opacity:      1;
+  }
+
+  /* Действия */
+  .header-actions {
+    margin-left:  auto;
+    display:      flex;
+    align-items:  center;
+    gap:          var(--spacing-16);
+    flex-shrink:  0;
+  }
+
+  .header-phone {
+    font-family:    var(--font-sohne);
+    font-size:      15px;
+    font-weight:    500;
+    letter-spacing: -0.009em;
+    color:          var(--color-ink);
+    white-space:    nowrap;
+  }
+  .header-phone:hover { opacity: 0.7; }
+
+  /* Бургер (скрыт на десктопе) */
+  .burger { display: none; }
+
+  /* ── Мобильный drawer (вне <header>) ──────────────── */
+  .mobile-drawer {
+    display:    none;  /* скрыт на десктопе */
+  }
+
+  @media (max-width: 768px) {
+    .main-nav,
+    .header-phone { display: none; }
+
+    .header-actions { gap: var(--spacing-12); }
+
+    .burger {
+      display:         flex;
+      flex-direction:  column;
+      justify-content: center;
+      gap:             5px;
+      background:      none;
+      border:          none;
+      padding:         8px;
+      margin-left:     auto;
+      cursor:          pointer;
+    }
+
+    .burger span {
+      display:       block;
+      width:         22px;
+      height:        2px;
+      background:    var(--color-ink);
+      border-radius: 2px;
+      transition:    transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    /* Крестик */
+    .burger[aria-expanded="true"] span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+    .burger[aria-expanded="true"] span:nth-child(2) {
+      opacity: 0;
+    }
+    .burger[aria-expanded="true"] span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* Drawer — position: fixed относительно вьюпорта, */
+    /* т.к. элемент находится вне header (без backdrop-filter) */
+    .mobile-drawer {
+      position:   fixed;
+      top:        64px;
+      left:       0;
+      right:      0;
+      bottom:     0;
+      background: var(--color-canvas);
+      overflow-y: auto;
+      z-index:    99;
+      display:    none;
+      flex-direction: column;
+      padding:    var(--spacing-24) var(--spacing-20);
+      gap:        var(--spacing-32);
+    }
+
+    .mobile-drawer.open {
+      display: flex;
+    }
+
+    .mobile-drawer nav ul {
+      list-style:     none;
+      display:        flex;
+      flex-direction: column;
+      gap:            0;
+    }
+
+    .drawer-link {
+      display:       block;
+      padding:       var(--spacing-16) 0;
+      font-family:   var(--font-sohne);
+      font-size:     20px;
+      font-weight:   500;
+      color:         var(--color-ink);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      transition:    opacity 0.15s ease;
+    }
+    .drawer-link:hover { opacity: 0.6; }
+
+    .drawer-has-children .drawer-link {
+      border-bottom: none;
+      padding-bottom: var(--spacing-8);
+    }
+
+    .drawer-subnav {
+      list-style:     none;
+      margin:         0 0 var(--spacing-8);
+      padding:        0 0 0 var(--spacing-12);
+      border-bottom:  1px solid rgba(0, 0, 0, 0.06);
+      display:        flex;
+      flex-direction: column;
+      gap:            var(--spacing-4);
+    }
+
+    .drawer-sublink {
+      display:       block;
+      padding:       var(--spacing-8) 0 var(--spacing-8) var(--spacing-8);
+      font-family:   var(--font-sohne);
+      font-size:     16px;
+      font-weight:   450;
+      color:         var(--color-muted-stone);
+      text-decoration: none;
+      border-left:   2px solid rgba(0, 0, 0, 0.08);
+    }
+    .drawer-sublink:hover { opacity: 0.75; color: var(--color-ink); }
+
+    .drawer-sublink.is-current,
+    .drawer-sublink[aria-current='page'] {
+      color:       var(--color-ink);
+      font-weight: 500;
+      border-left-color: var(--color-ink);
+      opacity:     1;
+    }
+
+    .drawer-footer {
+      margin-top:     auto;
+      display:        flex;
+      flex-direction: column;
+      gap:            var(--spacing-12);
+      padding-top:    var(--spacing-24);
+      border-top:     1px solid rgba(0,0,0,0.06);
+    }
+
+    .drawer-phone {
+      font-family: var(--font-sohne);
+      font-size:   18px;
+      font-weight: 500;
+      color:       var(--color-ink);
+      text-decoration: none;
+    }
+    .drawer-phone:hover { opacity: 0.7; }
+
+    .drawer-cta { width: 100%; text-align: center; justify-content: center; }
+  }
+</style>
+
+<script>
+  const burger  = document.getElementById('burger-btn') as HTMLButtonElement;
+  const drawer  = document.getElementById('mobile-drawer') as HTMLElement;
+
+  function openMenu() {
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden', 'false');
+    burger.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+    burger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  burger?.addEventListener('click', () => {
+    drawer.classList.contains('open') ? closeMenu() : openMenu();
+  });
+
+  // Закрыть при переходе по ссылке
+  drawer?.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  // Закрыть по Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer.classList.contains('open')) closeMenu();
+  });
+</script>

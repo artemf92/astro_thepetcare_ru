@@ -1,0 +1,29 @@
+{
+  "name": "thepetcare-astro",
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "astro dev --host",
+    "dev:cms": "npx concurrently \"astro dev\" \"npx decap-server\"",
+    "build": "astro build",
+    "preview": "astro preview",
+    "export:wp": "node scripts/wp-to-astro.mjs",
+    "images:webp": "node scripts/convert-to-webp.mjs"
+  },
+  "dependencies": {
+    "@astrojs/node": "^8.3.4",
+    "@astrojs/sitemap": "^3.0.0",
+    "@fancyapps/ui": "^6.1.14",
+    "astro": "^5.0.0",
+    "sharp": "^0.33.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "concurrently": "^9.2.1",
+    "decap-server": "^3.7.0",
+    "tailwindcss": "^4.0.0",
+    "turndown": "^7.2.0",
+    "typescript": "^5.0.0"
+  },
+  "packageManager": "pnpm@11.0.8+sha512.4c4097e1dd2d42372c4e7fa5a791ff28fc75a484c7ac192e64b1df0fdef17594ba982f9b4fed9adfb3c757846f565b799b2763fb3733d1de1bcb82cf46684912"
+}

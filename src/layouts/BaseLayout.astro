@@ -1,0 +1,143 @@
+---
+import SEO from '../components/seo/SEO.astro';
+import StructuredData from '../components/seo/StructuredData.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import CookieBanner from '../components/layout/CookieBanner.astro';
+import ScrollToTop from '../components/layout/ScrollToTop.astro';
+import CallbackModal from '../components/ui/CallbackModal.astro';
+import '../styles/tailwind.css';
+
+interface Props {
+  title:       string;
+  description: string;
+  ogImage?:    string;
+  canonical?:  string;
+  bodyClass?:  string;
+  noindex?:    boolean;
+}
+
+const { title, description, ogImage, canonical, bodyClass, noindex } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="generator" content={Astro.generator} />
+
+  <!-- Preload критичных шрифтов -->
+  <link rel="preload" href="/fonts/sohne-400.woff2"
+        as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/signifier-400.woff2"
+        as="font" type="font/woff2" crossorigin />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png"     href="/favicon.png" />
+
+  <meta name="yandex-verification" content="d776e8ce58f661e5" />
+
+  <SEO
+    title={title}
+    description={description}
+    ogImage={ogImage}
+    canonical={canonical}
+    noindex={noindex}
+  />
+
+  <StructuredData canonical={canonical} title={title} />
+
+  <!-- Слот для page-specific preload / meta (hero image и т.д.) -->
+  <slot name="head" />
+
+  <meta name="apple-mobile-web-app-title" content="ThePetCare.ru" />
+
+  <script is:inline>
+    (function () {
+      function startMetrikaDelayed() {
+        window.setTimeout(function () {
+          (function (m, e, t, r, i, k, a) {
+            m[i] =
+              m[i] ||
+              function () {
+                (m[i].a = m[i].a || []).push(arguments);
+              };
+            m[i].l = 1 * new Date();
+            for (var j = 0; j < document.scripts.length; j++) {
+              if (document.scripts[j].src === r) {
+                return;
+              }
+            }
+            k = e.createElement(t);
+            a = e.getElementsByTagName(t)[0];
+            k.async = 1;
+            k.src = r;
+            a.parentNode.insertBefore(k, a);
+          })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
+
+          ym(98486642, 'init', {
+            clickmap: true,
+            trackLinks: true,
+            accurateTrackBounce: true,
+            webvisor: true,
+          });
+        }, 0);
+      }
+
+      if (document.readyState === 'complete') {
+        startMetrikaDelayed();
+      } else {
+        window.addEventListener('load', startMetrikaDelayed);
+      }
+    })();
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/98486642" style="position:absolute;left:-9999px" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
+</head>
+<body class={bodyClass}>
+
+  <Header />
+
+  <main id="main-content">
+    <slot />
+  </main>
+
+  <Footer />
+  <CookieBanner />
+  <ScrollToTop />
+  <CallbackModal />
+
+  <!-- Scroll animations (IntersectionObserver, AOS-совместимые data-атрибуты) -->
+  <!-- CSS задан в global.css; здесь только логика триггера -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const items = document.querySelectorAll<HTMLElement>('[data-aos]');
+      if (!items.length) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const el  = entry.target as HTMLElement;
+            const delay = Number(el.dataset.aosDelay    ?? 0);
+            const dur   = Number(el.dataset.aosDuration ?? 700);
+            el.style.transitionDuration = `${dur}ms`;
+            if (delay > 0) {
+              setTimeout(() => el.classList.add('aos-animate'), delay);
+            } else {
+              el.classList.add('aos-animate');
+            }
+            observer.unobserve(el);
+          });
+        },
+        { rootMargin: '0px 0px -60px 0px', threshold: 0.05 }
+      );
+
+      items.forEach(el => observer.observe(el));
+    });
+  </script>
+
+</body>
+</html>

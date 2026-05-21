@@ -1,0 +1,359 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AnimatedBlock from '../components/ui/AnimatedBlock.astro';
+import Breadcrumb from '../components/ui/Breadcrumb.astro';
+import { site } from '../data/site';
+
+// Yandex Maps OID организации
+const YANDEX_OID = '147452550064';
+// Координаты и zoom для карты
+const MAP_URL = `https://yandex.ru/map-widget/v1/?ll=20.500965%2C54.718210&z=17&pt=20.500965%2C54.718210%2Cpm2rdm&text=%D0%9A%D0%B0%D0%BB%D0%B8%D0%BD%D0%B8%D0%BD%D0%B3%D1%80%D0%B0%D0%B4%2C%20%D1%83%D0%BB.%20%D0%98%D0%B2%D0%B0%D0%BD%D0%B0%20%D0%A1%D1%83%D1%81%D0%B0%D0%BD%D0%B8%D0%BD%D0%B0%2C%2024`;
+const REVIEWS_URL = `https://yandex.ru/maps-reviews-widget/${YANDEX_OID}?comments`;
+---
+
+<BaseLayout
+  title="Контакты — ThePetCare | Груминг-студия в Калининграде"
+  description="Адрес: Калининград, ул. Ивана Сусанина, д. 24. Телефон: +7 (902) 416-99-59. Режим работы: ежедневно 9:00–19:00."
+>
+
+  <Breadcrumb items={[{ label: 'Контакты' }]} />
+
+  <!-- Hero -->
+  <section class="contact-hero section">
+    <div class="container">
+      <AnimatedBlock>
+        <p class="section-eyebrow">Как нас найти</p>
+        <h1 class="display">Контакты</h1>
+      </AnimatedBlock>
+
+      <AnimatedBlock animation="fade-up" delay={80}>
+        <div class="contact-info-row">
+
+          <div class="contact-detail">
+            <span class="detail-icon">📍</span>
+            <div>
+              <p class="detail-label">Адрес</p>
+              <p class="detail-value">г. Калининград, ул. И. Сусанина, д. 24</p>
+            </div>
+          </div>
+
+          <div class="contact-detail">
+            <span class="detail-icon">📞</span>
+            <div>
+              <p class="detail-label">Телефон</p>
+              <a href={`tel:${site.contacts.phoneRaw}`} class="detail-value detail-link">
+                {site.contacts.phone}
+              </a>
+            </div>
+          </div>
+
+          <div class="contact-detail">
+            <span class="detail-icon">🕐</span>
+            <div>
+              <p class="detail-label">Режим работы</p>
+              <p class="detail-value">Ежедневно, 9:00–19:00</p>
+            </div>
+          </div>
+
+          <div class="contact-detail">
+            <span class="detail-icon">✉️</span>
+            <div>
+              <p class="detail-label">Запись онлайн</p>
+              <a href={site.booking} target="_blank" rel="noopener noreferrer" class="detail-value detail-link">
+                dikidi.ru
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </AnimatedBlock>
+    </div>
+  </section>
+
+  <!-- Карта + отзывы -->
+  <section class="contact-map-section section">
+    <div class="container">
+      <div class="map-reviews-grid">
+
+        <!-- Яндекс Карта -->
+        <AnimatedBlock animation="fade-right" class="map-wrap">
+          <div class="map-container">
+            <iframe
+              data-src={MAP_URL}
+              class="yandex-map"
+              width="100%"
+              height="100%"
+              frameborder="0"
+              allowfullscreen
+              title="Карта — ThePetCare на ул. Ивана Сусанина, 24"
+            ></iframe>
+            <div class="map-placeholder" aria-hidden="true">
+              <span>🗺️ Карта загружается…</span>
+            </div>
+          </div>
+        </AnimatedBlock>
+
+        <!-- Виджет отзывов Яндекс Карт -->
+        <AnimatedBlock animation="fade-left" class="reviews-wrap">
+          <div class="reviews-container">
+            <iframe
+              data-src={REVIEWS_URL}
+              class="yandex-reviews"
+              width="100%"
+              height="100%"
+              frameborder="0"
+              title="Отзывы на Яндекс Картах — ThePetCare"
+            ></iframe>
+            <div class="reviews-placeholder" aria-hidden="true">
+              <span>⭐ Загружаем отзывы…</span>
+            </div>
+          </div>
+          <a
+            href={`https://yandex.ru/maps/org/studiya_zabotlivogo_gruminga/${YANDEX_OID}/`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="reviews-more-link"
+          >
+            Больше отзывов на Яндекс Картах →
+          </a>
+        </AnimatedBlock>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="contact-cta section">
+    <div class="container">
+      <AnimatedBlock animation="fade-up">
+        <div class="contact-cta-inner card">
+          <div class="cta-text">
+            <h2>Записаться на груминг</h2>
+            <p>Онлайн-запись доступна 24/7 — выберите мастера и удобное время.</p>
+          </div>
+          <div class="cta-actions">
+            <button class="btn btn-primary" data-open-callback>
+              Записаться онлайн
+            </button>
+            <a href={`tel:${site.contacts.phoneRaw}`} class="btn btn-ghost">
+              {site.contacts.phone}
+            </a>
+          </div>
+        </div>
+      </AnimatedBlock>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  /* ── Hero ──────────────────────────────────────────── */
+  .contact-hero { background: var(--color-fog); }
+
+  .display { margin-bottom: var(--spacing-40); }
+
+  .contact-info-row {
+    display:   flex;
+    flex-wrap: wrap;
+    gap:       var(--spacing-32) var(--spacing-64);
+  }
+
+  .contact-detail {
+    display:     flex;
+    gap:         var(--spacing-16);
+    align-items: flex-start;
+  }
+
+  .detail-icon {
+    font-size:   22px;
+    flex-shrink: 0;
+    margin-top:  2px;
+  }
+
+  .detail-label {
+    font-family:    var(--font-sohne);
+    font-size:      12px;
+    font-weight:    500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color:          var(--color-muted-stone);
+    margin-bottom:  4px;
+  }
+
+  .detail-value {
+    font-family: var(--font-sohne);
+    font-size:   16px;
+    font-weight: 450;
+    color:       var(--color-ink);
+  }
+
+  .detail-link { text-decoration: none; }
+  .detail-link:hover { color: var(--color-terracotta); }
+
+  /* ── Карта + отзывы ────────────────────────────────── */
+  .contact-map-section { background: var(--color-canvas); }
+
+  .map-reviews-grid {
+    display:               grid;
+    grid-template-columns: 1fr 480px;
+    gap:                   var(--spacing-32);
+    align-items:           stretch;
+  }
+
+  /* Карта */
+  .map-wrap { display: flex; flex-direction: column; }
+
+  .map-container {
+    position:      relative;
+    border-radius: var(--radius-cards);
+    overflow:      hidden;
+    height:        560px;
+    flex:          1;
+  }
+
+  .yandex-map {
+    position: absolute;
+    inset:    0;
+    width:    100%;
+    height:   100%;
+    border:   none;
+    display:  block;
+  }
+
+  .map-placeholder {
+    position:        absolute;
+    inset:           0;
+    background:      var(--color-fog);
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    font-family:     var(--font-sohne);
+    font-size:       15px;
+    color:           var(--color-muted-stone);
+    transition:      opacity 0.3s ease;
+  }
+  .map-placeholder.hidden { opacity: 0; pointer-events: none; }
+
+  /* Виджет отзывов */
+  .reviews-wrap {
+    display:        flex;
+    flex-direction: column;
+    gap:            var(--spacing-16);
+  }
+
+  .reviews-container {
+    position:      relative;
+    border-radius: var(--radius-cards);
+    overflow:      hidden;
+    flex:          1;
+    height:        560px;
+    border:        1px solid rgba(0, 0, 0, 0.07);
+  }
+
+  .yandex-reviews {
+    position: absolute;
+    inset:    0;
+    width:    100%;
+    height:   100%;
+    border:   none;
+    display:  block;
+  }
+
+  .reviews-placeholder {
+    position:        absolute;
+    inset:           0;
+    background:      var(--color-fog);
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    font-family:     var(--font-sohne);
+    font-size:       15px;
+    color:           var(--color-muted-stone);
+    transition:      opacity 0.3s ease;
+  }
+  .reviews-placeholder.hidden { opacity: 0; pointer-events: none; }
+
+  .reviews-more-link {
+    font-family:     var(--font-sohne);
+    font-size:       14px;
+    color:           var(--color-terracotta);
+    text-decoration: none;
+    text-align:      center;
+    display:         block;
+  }
+  .reviews-more-link:hover { text-decoration: underline; }
+
+  /* ── CTA ───────────────────────────────────────────── */
+  .contact-cta { background: var(--color-fog); }
+
+  .contact-cta-inner {
+    display:         flex;
+    align-items:     center;
+    justify-content: space-between;
+    gap:             var(--spacing-24);
+    padding:         var(--spacing-32) var(--spacing-40);
+  }
+
+  .cta-text h2 {
+    font-size:     22px;
+    font-weight:   500;
+    margin-bottom: var(--spacing-8);
+  }
+
+  .cta-text p {
+    font-size: 15px;
+    color:     var(--color-muted-stone);
+  }
+
+  .cta-actions {
+    display:   flex;
+    flex-wrap: wrap;
+    gap:       var(--spacing-12);
+    flex-shrink: 0;
+  }
+
+  /* ── Адаптив ───────────────────────────────────────── */
+  @media (max-width: 1024px) {
+    .map-reviews-grid { grid-template-columns: 1fr; }
+    .map-container    { height: 420px; }
+    .reviews-container { height: 500px; }
+  }
+
+  @media (max-width: 768px) {
+    .contact-info-row { gap: var(--spacing-24); }
+    .map-container    { height: 320px; }
+    .reviews-container { height: 460px; }
+
+    .contact-cta-inner {
+      flex-direction: column;
+      align-items:    flex-start;
+      padding:        var(--spacing-24);
+    }
+  }
+</style>
+
+<script>
+  // Lazy-загрузка карты через IntersectionObserver
+  function lazyIframe(selector: string, placeholderSelector: string) {
+    const iframe = document.querySelector<HTMLIFrameElement>(selector);
+    const placeholder = document.querySelector<HTMLElement>(placeholderSelector);
+    if (!iframe || !iframe.dataset.src) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          iframe.src = iframe.dataset.src!;
+          iframe.addEventListener('load', () => {
+            placeholder?.classList.add('hidden');
+          }, { once: true });
+          observer.disconnect();
+        }
+      });
+    }, { rootMargin: '200px' });
+
+    observer.observe(iframe);
+  }
+
+  lazyIframe('.yandex-map', '.map-placeholder');
+  lazyIframe('.yandex-reviews', '.reviews-placeholder');
+</script>
