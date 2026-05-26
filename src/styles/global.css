@@ -1,5 +1,3 @@
-@import './fonts.css';
-
 /* ═══════════════════════════════════════════════════════
    CSS CUSTOM PROPERTIES — из DESIGN.md (Steep / Warm Crisp Canvas)
    ═══════════════════════════════════════════════════════ */
@@ -12,7 +10,7 @@
   --color-terracotta:    #5d2a1a;
   --color-fog:           #f7f7f8;
   --color-muted-stone:   #4c4c4c;
-  --color-light-steel:   #777b86;
+  --color-light-steel:   #595e69; /* WCAG AA: 4.55:1 на #f7f7f8 / 7.6:1 на #fff */
   --color-hint-of-grey:  #a3a6af;
   --color-dusk-link:     #8b8c8d;
 

@@ -24,7 +24,13 @@ const year = new Date().getFullYear();
         <p class="footer-desc">{site.description}</p>
       )}
       <br>
-      <iframe src="https://yandex.ru/sprav/widget/rating-badge/147452550064?type=rating&amp;theme=dark" width="150" height="50"></iframe>
+      <iframe
+        src="https://yandex.ru/sprav/widget/rating-badge/147452550064?type=rating&amp;theme=dark"
+        width="150"
+        height="50"
+        loading="lazy"
+        title="Рейтинг ThePetCare на Яндекс Картах"
+      ></iframe>
     </div>
 
     <!-- Колонка: услуги -->
@@ -123,19 +129,23 @@ const year = new Date().getFullYear();
 
 <script is:inline>
   (function () {
-    function injectJivoDelayed() {
-      window.setTimeout(function () {
-        const script = document.createElement('script');
-        script.src = '//code.jivo.ru/widget/j2V0tblbPu';
-        document.body.appendChild(script);
-      }, 3500);
+    var injected = false;
+    function injectJivo() {
+      if (injected) return;
+      injected = true;
+      var script = document.createElement('script');
+      script.src = 'https://code.jivo.ru/widget/j2V0tblbPu';
+      script.async = true;
+      document.body.appendChild(script);
     }
 
-    if (document.readyState === 'complete') {
-      injectJivoDelayed();
-    } else {
-      window.addEventListener('load', injectJivoDelayed);
+    var events = ['scroll', 'mousemove', 'touchstart', 'keydown', 'click'];
+    function onInteract() {
+      events.forEach(function (ev) { window.removeEventListener(ev, onInteract); });
+      injectJivo();
     }
+    events.forEach(function (ev) { window.addEventListener(ev, onInteract, { passive: true, once: true }); });
+    setTimeout(injectJivo, 3500);
   })();
 </script>
 

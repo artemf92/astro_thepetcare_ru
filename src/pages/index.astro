@@ -338,6 +338,7 @@ const gallery = [
               width="100%"
               height="400"
               frameborder="0"
+              loading="lazy"
               allowfullscreen
               title="Карта — ThePetCare на ул. Ивана Сусанина, 24"
             ></iframe>
@@ -1192,8 +1193,8 @@ const gallery = [
   }
 
   @media (max-width: 768px) {
-    .intro-grid { grid-template-columns: 1fr; }
-    .intro-img-wrap { height: 300px; }
+    .intro-grid { display: flex; padding: var(--spacing-20); min-height: 300px; gap: 0 }
+    .intro-img, .intro-img-wrap { display: none; }
     .intro-text {
       padding: var(--spacing-40) var(--spacing-20);
     }
@@ -1210,6 +1211,7 @@ const gallery = [
 
     .contacts-grid { grid-template-columns: 1fr; gap: var(--spacing-32); }
     .map-container { height: 320px; }
+    .cta-grid { grid-template-columns: 1fr; }
   }
 
   @media (max-width: 480px) {
@@ -1297,16 +1299,38 @@ const gallery = [
 </script>
 
 <script>
-  import { Fancybox } from '@fancyapps/ui/dist/fancybox/';
+  // CSS Fancybox подключаем статически — он маленький (~10kb)
+  // и без него dynamic-import CSS-chunk даёт 404 при кэше браузера.
   import '@fancyapps/ui/dist/fancybox/fancybox.css';
 
+  // JS Fancybox грузим только при первом клике по слайду — экономит ~70kb initial JS.
   const galleryRoot = document.getElementById('gallery-track');
   if (galleryRoot) {
-    Fancybox.bind(galleryRoot, '[data-fancybox="gallery-works"]', {
-      theme: 'light',
-      Carousel: {
-        infinite: false,
-      },
-    });
+    let loaded = false;
+
+    const onClick = async (e: Event) => {
+      const target = e.target as Element;
+      const link = target.closest?.<HTMLAnchorElement>('[data-fancybox="gallery-works"]');
+      if (!link || loaded) return;
+
+      // Блокируем переход по ссылке только пока Fancybox ещё не загружен.
+      e.preventDefault();
+      loaded = true;
+
+      // Снимаем свой обработчик до Fancybox.bind, чтобы синтетический клик
+      // ниже долетел до делегированного хендлера Fancybox без перехвата.
+      galleryRoot.removeEventListener('click', onClick);
+
+      const { Fancybox } = await import('@fancyapps/ui/dist/fancybox/');
+      Fancybox.bind(galleryRoot, '[data-fancybox="gallery-works"]', {
+        theme: 'light',
+        Carousel: { infinite: false },
+      });
+
+      // Открываем lightbox на той картинке, по которой кликнули.
+      link.click();
+    };
+
+    galleryRoot.addEventListener('click', onClick);
   }
 </script>

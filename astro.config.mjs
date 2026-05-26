@@ -5,6 +5,8 @@ import node from '@astrojs/node';
 import remarkSnippetServiceIncludes from './remark-snippet-service-includes.mjs';
 import remarkSnippetServicePrice from './remark-snippet-service-price.mjs';
 import remarkSnippetServiceWhy from './remark-snippet-service-why.mjs';
+import remarkImageAttrs from './remark-image-attrs.mjs';
+import rehypeTableWrap from './rehype-table-wrap.mjs';
 
 export default defineConfig({
   site: 'https://thepetcare.ru',
@@ -16,6 +18,10 @@ export default defineConfig({
       remarkSnippetServicePrice,
       remarkSnippetServiceIncludes,
       remarkSnippetServiceWhy,
+      remarkImageAttrs,
+    ],
+    rehypePlugins: [
+      rehypeTableWrap,
     ],
   },
 
@@ -28,7 +34,7 @@ export default defineConfig({
   },
 
   build: {
-    inlineStylesheets: 'auto', // инлайн CSS < 4kb
+    inlineStylesheets: 'auto', // мелкий CSS инлайнится, крупный (fancybox) грузится отдельно
   },
 
   prefetch: {

@@ -104,7 +104,7 @@ const shareLinks = {
 
           <!-- Telegram -->
           <a href={shareLinks.telegram} target="_blank" rel="noopener noreferrer"
-             class="share-btn share-btn--tg" aria-label="Поделиться в Telegram">
+             class="share-btn share-btn--tg" aria-label="Telegram — поделиться статьёй">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/>
             </svg>
@@ -113,14 +113,14 @@ const shareLinks = {
 
           <!-- VK -->
           <a href={shareLinks.vk} target="_blank" rel="noopener noreferrer"
-             class="share-btn share-btn--vk" aria-label="Поделиться ВКонтакте">
+             class="share-btn share-btn--vk" aria-label="ВКонтакте — поделиться статьёй">
              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path class="st0" d="M13.162 18.994c.609 0 .858-.406.851-.915-.031-1.917.714-2.949 2.059-1.604 1.488 1.488 1.796 2.519 3.603 2.519h3.2c.808 0 1.126-.26 1.126-.668 0-.863-1.421-2.386-2.625-3.504-1.686-1.565-1.765-1.602-.313-3.486 1.801-2.339 4.157-5.336 2.073-5.336h-3.981c-.772 0-.828.435-1.103 1.083-.995 2.347-2.886 5.387-3.604 4.922-.751-.485-.407-2.406-.35-5.261.015-.754.011-1.271-1.141-1.539-.629-.145-1.241-.205-1.809-.205-2.273 0-3.841.953-2.95 1.119 1.571.293 1.42 3.692 1.054 5.16-.638 2.556-3.036-2.024-4.035-4.305-.241-.548-.315-.974-1.175-.974h-3.255c-.492 0-.787.16-.787.516 0 .602 2.96 6.72 5.786 9.77 2.756 2.975 5.48 2.708 7.376 2.708z"/></svg>
             <span>ВКонтакте</span>
           </a>
 
           <!-- OK.ru -->
           <a href={shareLinks.max} target="_blank" rel="noopener noreferrer"
-             class="share-btn share-btn--ok" aria-label="Поделиться в Одноклассники">
+             class="share-btn share-btn--ok" aria-label="OK.ru — поделиться статьёй">
              <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
              width="20" height="20" fill="currentColor" viewBox="0 0 95.481 95.481" style="enable-background:new 0 0 95.481 95.481;"
              xml:space="preserve">
@@ -172,7 +172,7 @@ const shareLinks = {
 
           <!-- Яндекс Дзен -->
           <a href={shareLinks.dzen} target="_blank" rel="noopener noreferrer"
-             class="share-btn share-btn--dzen" aria-label="Поделиться в Яндекс Дзен">
+             class="share-btn share-btn--dzen" aria-label="Дзен — поделиться статьёй">
              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 28 28">
               <path fill="#2C3036"
                   d="M16.7 16.7c-2.2 2.27-2.36 5.1-2.55 11.3 5.78 0 9.77-.02 11.83-2.02 2-2.06 2.02-6.24 2.02-11.83-6.2.2-9.03.35-11.3 2.55M0 14.15c0 5.59.02 9.77 2.02 11.83 2.06 2 6.05 2.02 11.83 2.02-.2-6.2-.35-9.03-2.55-11.3-2.27-2.2-5.1-2.36-11.3-2.55M13.85 0C8.08 0 4.08.02 2.02 2.02.02 4.08 0 8.26 0 13.85c6.2-.2 9.03-.35 11.3-2.55 2.2-2.27 2.36-5.1 2.55-11.3m2.85 11.3C14.5 9.03 14.34 6.2 14.15 0c5.78 0 9.77.02 11.83 2.02 2 2.06 2.02 6.24 2.02 11.83-6.2-.2-9.03-.35-11.3-2.55">
@@ -389,10 +389,21 @@ const shareLinks = {
     list-style: initial;
   }
 
+  .prose :global(.table-wrap) {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: var(--spacing-20);
+  }
+
   .prose :global(table) {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: var(--spacing-20);
+  }
+
+  .prose :global(.table-wrap > table) {
+    margin-bottom: 0;
   }
 
   .prose :global(th) {
@@ -511,7 +522,7 @@ const shareLinks = {
     border-radius:   100px;
     font-family:     var(--font-sohne);
     font-size:       14px;
-    font-weight:     500;
+    font-weight:     700;
     text-decoration: none;
     transition:      opacity 0.15s, transform 0.15s;
     color:           #fff;
@@ -519,10 +530,11 @@ const shareLinks = {
   }
   .share-btn:hover { opacity: .88; transform: translateY(-1px); }
 
-  .share-btn--tg   { background: #2AABEE; }
-  .share-btn--vk   { background: #0077FF; }
-  .share-btn--ok   { background: #f7931e; }
-  .share-btn--dzen { background: #FF0000; }
+  /* Цвета затемнены до WCAG AA (большой текст ≥3:1) */
+  .share-btn--tg   { background: #117EB3; }
+  .share-btn--vk   { background: #0061cc; }
+  .share-btn--ok   { background: #ad6500; }
+  .share-btn--dzen { background: #cc0000; }
   .share-btn--max  { background: #9a27ff; }
 
   /* ── Related ────────────────────────────────────────── */
@@ -608,7 +620,9 @@ const shareLinks = {
   @media (max-width: 640px) {
     .related-grid { grid-template-columns: 1fr 1fr; }
     .article-author::before { display: none; }
-    .prose :global(table) { overflow-x: auto;width: 100%; }
+    /* На мобильных таблицы получают min-width — это гарантирует скролл,
+       если контента больше, чем влезает в экран. */
+    .prose :global(.table-wrap > table) { min-width: 480px; }
   }
 
   @media (max-width: 480px) {
