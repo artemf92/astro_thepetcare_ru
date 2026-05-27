@@ -8,6 +8,8 @@ const pages = defineCollection({
     metaTitle:       z.string(),
     metaDescription: z.string().optional().default(''),
     ogImage:         z.string().optional(),
+    /** Дата последнего значимого обновления контента. Используется в sitemap `lastmod`. */
+    updated:         z.coerce.date().optional(),
   }),
 });
 
@@ -33,6 +35,8 @@ const services = defineCollection({
     /** Нижний блок «Записаться» на странице услуги */
     bottomCtaTitle: z.string().optional(),
     bottomCtaSub:  z.string().optional(),
+    /** Дата последнего значимого обновления контента. Используется в sitemap `lastmod`. */
+    updated:       z.coerce.date().optional(),
   }),
 });
 
@@ -45,6 +49,8 @@ const blog = defineCollection({
     date:        z.coerce.date(),
     tags:        z.array(z.string()).optional().default([]),
     author:      z.string().optional().default('Редакция The Pet Care'),
+    /** Дата последнего значимого обновления статьи. Используется в sitemap `lastmod`. */
+    updated:     z.coerce.date().optional(),
   }),
 });
 

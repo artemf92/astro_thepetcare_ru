@@ -6,6 +6,7 @@ import Footer from '../components/layout/Footer.astro';
 import CookieBanner from '../components/layout/CookieBanner.astro';
 import ScrollToTop from '../components/layout/ScrollToTop.astro';
 import CallbackModal from '../components/ui/CallbackModal.astro';
+import type { ServiceJsonLdOptions } from '../lib/schema-org';
 import '../styles/tailwind.css';
 
 interface Props {
@@ -15,9 +16,11 @@ interface Props {
   canonical?:  string;
   bodyClass?:  string;
   noindex?:    boolean;
+  /** Если задано — на страницу добавится JSON-LD `Service` рядом с основным графом. */
+  service?:    Omit<ServiceJsonLdOptions, 'baseUrl' | 'pageUrl'>;
 }
 
-const { title, description, ogImage, canonical, bodyClass, noindex } = Astro.props;
+const { title, description, ogImage, canonical, bodyClass, noindex, service } = Astro.props;
 ---
 
 <!doctype html>
@@ -41,7 +44,7 @@ const { title, description, ogImage, canonical, bodyClass, noindex } = Astro.pro
     noindex={noindex}
   />
 
-  <StructuredData canonical={canonical} title={title} />
+  <StructuredData canonical={canonical} title={title} service={service} />
 
   <!-- Слот для page-specific preload / meta (hero image и т.д.) -->
   <slot name="head" />

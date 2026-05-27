@@ -1,14 +1,17 @@
 ---
-import { buildSiteJsonLd } from '../../lib/schema-org';
+import { buildSiteJsonLd, buildServiceJsonLd } from '../../lib/schema-org';
+import type { ServiceJsonLdOptions } from '../../lib/schema-org';
 import { site } from '../../data/site';
 
 interface Props {
   /** Как в SEO: путь от корня сайта */
   canonical?: string;
   title?:      string;
+  /** Данные услуги для отдельного Service JSON-LD на странице услуги. */
+  service?:    Omit<ServiceJsonLdOptions, 'baseUrl' | 'pageUrl'>;
 }
 
-const { canonical, title } = Astro.props;
+const { canonical, title, service } = Astro.props;
 
 const baseUrl = Astro.site ?? new URL(site.url);
 const siteOrigin = baseUrl.origin;
@@ -22,6 +25,13 @@ const jsonLd = buildSiteJsonLd({
   pageUrl,
   pageTitle:  title,
 });
+
+const serviceJsonLd = service
+  ? buildServiceJsonLd({ baseUrl: siteOrigin, pageUrl, ...service })
+  : null;
 ---
 
 <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+{serviceJsonLd && (
+  <script type="application/ld+json" set:html={JSON.stringify(serviceJsonLd)} />
+)}

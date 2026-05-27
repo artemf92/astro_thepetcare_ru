@@ -59,7 +59,18 @@ function excerptToHtml(raw: string | undefined): string {
 const excerptHtml = excerptToHtml(excerpt);
 ---
 
-<BaseLayout title={metaTitle} description={metaDescription} ogImage={image}>
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  ogImage={image}
+  service={{
+    serviceName: h1,
+    category,
+    price,
+    image,
+    description: excerpt,
+  }}
+>
 
   <Breadcrumb items={[{ label: 'Услуги', href: '/services/' }, { label: h1 }]} />
 

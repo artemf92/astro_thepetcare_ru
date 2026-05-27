@@ -18,6 +18,22 @@ export interface SiteJsonLdOptions {
   pageTitle?: string;
 }
 
+export interface ServiceJsonLdOptions {
+  baseUrl:      string;
+  /** Название услуги (используется в serviceType и в itemOffered.name) */
+  serviceName:  string;
+  /** Категория для OfferCatalog.name, напр. «Для собак». По умолчанию — «Услуги груминга». */
+  category?:    string;
+  /** Сырая строка цены из CMS, напр. «от 1600 ₽». Из неё извлекаются цифры. */
+  price?:       string;
+  /** Главное фото услуги (путь от корня сайта) */
+  image?:       string;
+  /** Канонический URL страницы услуги */
+  pageUrl?:     string;
+  /** Краткое описание услуги */
+  description?: string;
+}
+
 function stripTrailingSlash(u: string): string {
   return u.replace(/\/+$/, '');
 }
@@ -64,10 +80,11 @@ export function buildSiteJsonLd(opts: SiteJsonLdOptions) {
     site.social.instagram,
     site.social.youtube,
     site.social.whatsapp,
+    site.social.doublegis,
   ].filter((u): u is string => Boolean(u && u.length));
 
   const organization = {
-    '@type':       'Organization' as const,
+    '@type':       'LocalBusiness' as const,
     '@id':         orgId,
     name:          site.name,
     url:           `${base}/`,
@@ -81,8 +98,37 @@ export function buildSiteJsonLd(opts: SiteJsonLdOptions) {
       addressLocality:   'Калининград',
       addressCountry:    'RU',
     },
+    aggregateRating: {
+      '@type':       'AggregateRating' as const,
+      ratingValue:   5.0,
+      reviewCount:   63,
+      bestRating:    5,
+      worstRating:   1,
+    },
+    openingHoursSpecification: [
+      {
+        '@type':     'OpeningHoursSpecification' as const,
+        dayOfWeek:   [
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday',
+          'Sunday',
+        ],
+        opens:  '10:00',
+        closes: '19:00',
+      },
+    ],
     ...(sameAs.length ? { sameAs } : {}),
   };
+
+  const geo = {
+    "@type": "GeoCoordinates" as const,
+    "latitude": 54.7529,
+    "longitude": 20.4957
+  }
 
   const website = {
     '@type':       'WebSite' as const,
@@ -150,6 +196,7 @@ export function buildSiteJsonLd(opts: SiteJsonLdOptions) {
     '@context': 'https://schema.org',
     '@graph':   [
       organization,
+      geo,
       website,
       webPage,
       header,
@@ -159,4 +206,68 @@ export function buildSiteJsonLd(opts: SiteJsonLdOptions) {
       footerAboutList,
     ],
   };
+}
+
+/**
+ * Извлекает числовую цену из строки CMS вида «от 1600 ₽» → «1600».
+ * Возвращает undefined, если цифр нет.
+ */
+function extractNumericPrice(raw: string | undefined): string | undefined {
+  if (!raw) return undefined;
+  const match = raw.match(/\d[\d\s]*/);
+  if (!match) return undefined;
+  const digits = match[0].replace(/\s+/g, '');
+  return digits.length ? digits : undefined;
+}
+
+export function buildServiceJsonLd(opts: ServiceJsonLdOptions) {
+  const base = stripTrailingSlash(opts.baseUrl);
+  const orgId = `${base}/#organization`;
+
+  const price = extractNumericPrice(opts.price);
+
+  const offer: Record<string, unknown> = {
+    '@type':      'Offer',
+    itemOffered:  {
+      '@type': 'Service',
+      name:    opts.serviceName,
+    },
+  };
+
+  if (price) {
+    offer.priceSpecification = {
+      '@type':        'PriceSpecification',
+      price,
+      priceCurrency:  'RUB',
+    };
+  }
+
+  const service: Record<string, unknown> = {
+    '@context':    'https://schema.org',
+    '@type':       'Service',
+    serviceType:   opts.serviceName,
+    name:          opts.serviceName,
+    provider:      { '@id': orgId },
+    areaServed:    {
+      '@type': 'City',
+      name:    'Калининград',
+    },
+    hasOfferCatalog: {
+      '@type':           'OfferCatalog',
+      name:              opts.category || 'Услуги груминга',
+      itemListElement:   [offer],
+    },
+  };
+
+  if (opts.image) {
+    service.image = absUrl(opts.image, base);
+  }
+  if (opts.pageUrl) {
+    service.url = opts.pageUrl;
+  }
+  if (opts.description) {
+    service.description = opts.description;
+  }
+
+  return service;
 }

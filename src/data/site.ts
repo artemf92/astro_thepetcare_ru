@@ -13,10 +13,11 @@ export const site = {
   },
 
   social: {
-    vk:        'http://vk.com/thepetcare',
+    vk:        'https://vk.com/thepetcare',
     telegram:  'https://t.me/the_petcare',
     instagram: 'https://instagram.com/thepetcare/',
     youtube:   '',
+    doublegis: 'https://2gis.ru/kaliningrad/firm/70000001094363491',
     whatsapp:  'https://wa.me/79024169959',
   },
 

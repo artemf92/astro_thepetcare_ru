@@ -7,6 +7,7 @@ import remarkSnippetServicePrice from './remark-snippet-service-price.mjs';
 import remarkSnippetServiceWhy from './remark-snippet-service-why.mjs';
 import remarkImageAttrs from './remark-image-attrs.mjs';
 import rehypeTableWrap from './rehype-table-wrap.mjs';
+import { resolveLastmod } from './sitemap-lastmod.mjs';
 
 export default defineConfig({
   site: 'https://thepetcare.ru',
@@ -26,7 +27,15 @@ export default defineConfig({
   },
 
   integrations: [
-    sitemap(),
+    sitemap({
+      // lastmod из frontmatter `updated`/`date` → git log → mtime файла.
+      // Подробности и приоритеты — в ./sitemap-lastmod.mjs.
+      serialize(item) {
+        const lastmod = resolveLastmod(item.url);
+        if (lastmod) item.lastmod = lastmod;
+        return item;
+      },
+    }),
   ],
 
   vite: {
@@ -47,5 +56,7 @@ export default defineConfig({
   },
 
   // SEO-редиректы: старые WP-пути → новые Astro-пути
-  redirects: {},
+  redirects: {
+    '/sitemap.xml': '/sitemap-index.xml'
+  },
 });
