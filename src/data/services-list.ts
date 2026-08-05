@@ -31,7 +31,7 @@ export const serviceCategories: ServiceCategory[] = [
     category: "Для кошек",
     items: [
       { title: "Экспресс-линька",           slug: "ekspress-linka-dlya-koshek",   price: "от 1500 ₽", imageId: "11055", image: "/images/uploads/11055.webp" },
-      { title: "Стрижка кошек",             slug: "polnyy-kompleks-dlya-koshek",  price: "от 1800 ₽", imageId: "11264", image: "/images/uploads/11264.webp" },
+      { title: "Полный комплекс для кошек",             slug: "polnyy-kompleks-dlya-koshek",  price: "от 1800 ₽", imageId: "11409", image: "/images/uploads/11409.webp" },
       { title: "Стрижка когтей",            slug: "strizhka-kogtey-koshkam",      price: "от 200 ₽",  imageId: "11251", image: "/images/uploads/11251.webp" },
       { title: "Комплекс для лысых пород",  slug: "spa-procedury-dlya-koshek",    price: "от 1000 ₽", imageId: "11420", image: "/images/uploads/11420.webp" },
       { title: "Мытье и сушка",             slug: "myte-i-sushka-koshek",         price: "от 2000 ₽", imageId: "11580", image: "/images/uploads/11580.webp" },
